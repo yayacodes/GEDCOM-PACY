@@ -6,4 +6,10 @@ def ageValidation(gedcom):
 def deathValidation(gedcom):
   pass
 
-allValidators = [ageValidation, deathValidation]
+def mar_before_divValidation(gedcom):
+  pass
+
+def date_before_currentValidation(gedcom):
+  pass
+
+allValidators = [ageValidation, deathValidation, mar_before_divValidation]
