@@ -15,4 +15,4 @@ if __name__ == '__main__':
     problems.append(problems_from_validator)
 
   # Print our problems
-  print(problems)
+  print('Problems:', problems)
