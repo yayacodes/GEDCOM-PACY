@@ -1,57 +1,27 @@
 import attr
 from datetime import datetime
-from prettytable import PrettyTable
 
-@attr.s
-class Individual:
-    id: str = attr.ib()
-    name: str = attr.ib(default=None)
-    sex: str = attr.ib(default=None)
-    birthday: datetime = attr.ib(default=None) 
-    death = attr.ib(default=None)
-    child = attr.ib(default=None)
-    spouse = attr.ib(default=None)
-    kind = 'INDI'
-    
-    @property
-    def alive(self) -> bool:
-        return False if self.death else True
-    
-    @property
-    def age(self) -> int:
-        if self.alive:
-            return int((datetime.now() - self.birthday).days / 365 )
-        else:
-            return int((self.death - self.birthday).days / 365 )
-        
-@attr.s
-class Family:
-    id: str = attr.ib()
-    married: datetime = attr.ib(default=None)
-    divorced: datetime = attr.ib(default=None)
-    husband_id: str = attr.ib(default=None)
-    husbandName: str = attr.ib(default=None)
-    wife_id: str = attr.ib(default=None)
-    wife_name: str = attr.ib(default=None)
-    children: list = attr.ib(factory=list)
-    kind = 'FAM'
-    
+from gedcom.Family import Family
+from gedcom.Gedcom import Gedcom
+from gedcom.Individual import Individual
+
+
 @attr.s
 class GedcomRow:
     level_string: str = attr.ib()
     tag: str = attr.ib()
     arg: str = attr.ib()
-        
+
     valid_tags_per_level = {
         0: ['INDI', 'FAM', 'HEAD', 'TRLR', 'NOTE'],
         1: ['NAME', 'SEX', 'BIRT', 'DEAT', 'FAMC', 'FAMS','MARR', 'HUSB', 'WIFE', 'CHIL', 'DIV'],
         2: ['DATE']
     }
-        
+
     @property
     def level(self) -> int:
         return int(self.level_string)
-    
+
     @property
     def valid(self) -> bool:
         if self.level in self.valid_tags_per_level.keys():
@@ -59,7 +29,8 @@ class GedcomRow:
                 return True
             else: return False
         else: return False
-        
+
+
 class GedcomParser:
     def parse(self, filename):
         def modify_lines(line):
@@ -160,69 +131,8 @@ class GedcomParser:
 
         return record
 
-@attr.s
-class Gedcom:
-    individuals = attr.ib(factory=list)
-    families = attr.ib(factory=list)
-    
-    def pretty_print(self):
-        individuals_table = PrettyTable()
-        individuals_table.field_names = ['ID', 'Name', 'Sex', 'Birthday', 'Age', 'Alive', 'Death', 'Child', 'Spouse']
-        for i in self.individuals:
-            individuals_table.add_row([
-                i.id, 
-                i.name, 
-                i.sex, 
-                self.date_string(i.birthday), 
-                i.age, i.alive, 
-                self.date_string(i.death), 
-                i.child, 
-                i.spouse
-            ])
-        
-        families_table = PrettyTable()
-        families_table.field_names = [
-            'ID', 'Married', 
-            'Divorced', 
-            'Husband ID', 
-            'Husband Name', 
-            'Wife ID', 
-            'Wife Name', 
-            'Children'
-        ]
-        
-        for f in self.families:
-            families_table.add_row([
-                f.id, 
-                self.date_string(f.married), 
-                self.date_string(f.divorced), 
-                f.husband_id, 
-                self.individual_with_id(f.husband_id).name,
-                f.wife_id,
-                self.individual_with_id(f.wife_id).name,
-                f.children
-            ])
-        
-        print('Individuals')
-        print(individuals_table)
-        print('Families')
-        print(families_table)
-        return("Individuals\n" + str(individuals_table) + "\nFamilies\n" + str(families_table))
-    
-    def date_string(self, date):
-        if date is None:
-            return 'NA'
-        else:
-            return date.strftime('%Y-%m-%d')
-        
-    def individual_with_id(self, id):
-        individual = list(filter(lambda x: x.id == id, self.individuals))
-        if len(individual) > 0:
-            return individual[0]
-        else:
-            return Individual(None, name='Not Found')
-        
+
 if __name__ == '__main__':
-    gedcom_file = GedcomParser().parse('test_family.ged')
-    with open('output.txt', 'w') as f:
+    gedcom_file = GedcomParser().parse('../res/test_family.ged')
+    with open('../res/output.txt', 'w') as f:
         f.write(gedcom_file.pretty_print())
