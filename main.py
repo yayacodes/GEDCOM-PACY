@@ -1,18 +1,12 @@
-from validation import allValidators
-from parser import GedcomParser
+from gedcom.validation import validate_gedcom
+from gedcom.GedcomParser import GedcomParser
 
 if __name__ == '__main__':
-  print('MAIN CODE HERE')
-  gedcom = GedcomParser().parse('test_family.ged')
-  gedcom.pretty_print()
+    print('MAIN CODE HERE')
+    gedcom = GedcomParser().parse('res/test_family.ged')
+    gedcom.pretty_print()
 
-  problems = []
+    problems = validate_gedcom(gedcom)
 
-  # Loop through each validator and apply it to the gedcom file
-  # Any problems will be appended to `problems` list
-  for validate in allValidators:
-    problems_from_validator = validate(gedcom)
-    problems.append(problems_from_validator)
-
-  # Print our problems
-  print('Problems:', problems)
+    # Print our problems
+    print('Problems:', problems)
