@@ -8,7 +8,7 @@ class Individual:
     name: str = attr.ib(default=None)
     sex: str = attr.ib(default=None)
     birthday: datetime = attr.ib(default=None)
-    death = attr.ib(default=None)
+    death = datetime = attr.ib(default=None)
     child = attr.ib(default=None)
     spouse = attr.ib(default=None)
     kind = 'INDI'
