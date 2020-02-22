@@ -34,14 +34,16 @@ class Gedcom:
         ]
 
         for f in self.families:
+            husband = self.individual_with_id(f.husband_id)
+            wife = self.individual_with_id(f.wife_id)
             families_table.add_row([
                 f.id,
                 self.date_string(f.married),
                 self.date_string(f.divorced),
                 f.husband_id,
-                self.individual_with_id(f.husband_id).name,
+                husband.name if husband is not None else 'Not found',
                 f.wife_id,
-                self.individual_with_id(f.wife_id).name,
+                wife.name if wife is not None else 'Not found',
                 f.children
             ])
 
@@ -58,8 +60,16 @@ class Gedcom:
             return date.strftime('%Y-%m-%d')
 
     def individual_with_id(self, id):
-        individual = list(filter(lambda x: x.id == id, self.individuals))
+        individual = [i for i in self.individuals if i.id == id]
         if len(individual) > 0:
             return individual[0]
         else:
-            return Individual(None, name='Not Found')
+            return None
+
+    # Get a family with the corresponding id
+    def family_with_id(self, id):
+        family = [f for f in self.families if f.id == id]
+        return family[0] if len(family) > 0 else None
+
+
+__all__ = Gedcom
