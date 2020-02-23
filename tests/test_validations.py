@@ -1,6 +1,7 @@
 from gedcom.validation import validate_too_old_individual
 from gedcom.GedcomParser import GedcomParser
 from gedcom import validation, Family, Gedcom, Individual
+from datetime import datetime
 
 
 def test_validate_too_old_individual():
@@ -149,3 +150,44 @@ def test_corresponding_entries():
       [Family('F01', husband_id='I01', wife_id='I02')],
       []
     )
+
+def test_marriage_after_fourteen():
+
+  # Husband < 14
+  individuals = [Individual('I01', spouse='F01', birthday=datetime(2007, 1, 1)), Individual('I02', spouse='F01', birthday=datetime(1997, 6, 18))]
+  families = [Family('F01', husband_id='I01', wife_id='I02', married=datetime(2020, 2, 20))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_marriage_after_fourteen(gedcom)
+  assert errors[0] == 'Error: Spouse I01 in family F01 was married at less than 14 years old'
+  assert len(errors) == 1
+
+  # Wife < 14
+  individuals = [Individual('I01', spouse='F01', birthday=datetime(2007, 1, 1)), Individual('I02', spouse='F01', birthday=datetime(1997, 6, 18))]
+  families = [Family('F01', wife_id='I01', husband_id='I02', married=datetime(2020, 2, 20))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_marriage_after_fourteen(gedcom)
+  assert errors[0] == 'Error: Spouse I01 in family F01 was married at less than 14 years old'
+  assert len(errors) == 1
+
+  # Husband + Wife < 14
+  individuals = [Individual('I01', spouse='F01', birthday=datetime(2007, 1, 1)), Individual('I02', spouse='F01', birthday=datetime(2007, 1, 1))]
+  families = [Family('F01', wife_id='I01', husband_id='I02', married=datetime(2020, 2, 20))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_marriage_after_fourteen(gedcom)
+  assert errors[0] == 'Error: Spouse I01 in family F01 was married at less than 14 years old'
+  assert errors[1] == 'Error: Spouse I02 in family F01 was married at less than 14 years old'
+  assert len(errors) == 2
+
+  # Husband + Wife > 14
+  individuals = [Individual('I01', spouse='F01', birthday=datetime(1997, 6, 18)), Individual('I02', spouse='F01', birthday=datetime(1997, 6, 18))]
+  families = [Family('F01', wife_id='I01', husband_id='I02', married=datetime(2020, 2, 20))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_marriage_after_fourteen(gedcom)
+  assert len(errors) == 0
+
+  # No marriage --> no errors
+  individuals = [Individual('I01', spouse='F01', birthday=datetime(1997, 6, 18)), Individual('I02', spouse='F01', birthday=datetime(1997, 6, 18))]
+  families = [Family('F01', wife_id='I01', husband_id='I02')]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_marriage_after_fourteen(gedcom)
+  assert len(errors) == 0
