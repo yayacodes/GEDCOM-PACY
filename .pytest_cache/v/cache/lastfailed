@@ -1,0 +1,4 @@
+{
+  "tests/test_gedcom_parser.py": true,
+  "tests/test_validations.py": true
+}

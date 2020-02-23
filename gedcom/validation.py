@@ -30,15 +30,17 @@ def birth_before_marriage(gedcom):
     result = []
 
     for family in gedcom.families:
-        childernlist = family.children
+        mariage_date = family.married
 
-        for child in childernlist:
-            if family.married == None:
-                result.append(f'Error: Parents are not married for {child}')
-            else:
-                for i in gedcom.individuals:
-                    if i.id == child and i.birthday < family.married:
-                         result.append(f'Error: The individual {i.name} ({i.id}) has birth before marriage, birth = {child.birthday}, marriage = {family.marriage}')
+        husband = gedcom.individual_with_id(family.husband_id)
+        wife = gedcom.individual_with_id(family.wife_id)
+
+        if not mariage_date:
+            continue
+        if husband.birthday and husband.birthday > mariage_date:
+            result.append(f'Error: The individual {husband.name} ({husband.id}) has marriage before birth, marriage = {mariage_date}, birth = {husband.birthday}')
+        if wife.birthday and wife.birthday > mariage_date:
+            result.append(f'Error: The individual {wife.name} ({wife.id}) has marriage before birth, marriage = {mariage_date}, birth = {wife.birthday}')
 
     return result
 

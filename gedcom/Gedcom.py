@@ -62,4 +62,3 @@ class Gedcom:
         if len(individual) > 0:
             return individual[0]
         else:
-            return Individual(None, name='Not Found')
