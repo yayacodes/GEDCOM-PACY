@@ -47,7 +47,22 @@ def validate_corresponding_entries(gedcom):
     
     return result
 
-all_validators = [validate_corresponding_entries, validate_too_old_individual]
+def validate_marriage_after_fourteen(gedcom):
+    errors = []
+
+    for family in gedcom.families:
+        husband = gedcom.individual_with_id(family.husband_id)
+        wife = gedcom.individual_with_id(family.wife_id)
+        
+        if family.married is not None:
+            if ((family.married - wife.birthday).days / 365) < 14:
+                errors.append(f'Error: Spouse {wife.id} in family {family.id} was married at less than 14 years old') 
+            if ((family.married - husband.birthday).days / 365) < 14:
+                errors.append(f'Error: Spouse {husband.id} in family {family.id} was married at less than 14 years old') 
+    
+    return errors
+
+all_validators = [validate_marriage_after_fourteen, validate_corresponding_entries, validate_too_old_individual]
 
 
 def validate_gedcom(gedcom):
