@@ -201,7 +201,7 @@ def test_marriage_after_divorce():
   assert errors[0] == 'Error: Family F01 has divorce date before marriage date'
   assert len(errors) == 1
   
-def test_validate_dates_before_current():
+def test_dates_before_current():
   # Marriage date after Today's date
   individuals = [Individual('I01', spouse='F01'), Individual('I02', spouse='F01')]
   families = [Family('F01', wife_id='I01', husband_id='I02', married=datetime(2025, 10, 10))]
@@ -233,7 +233,7 @@ def test_validate_dates_before_current():
   assert len(errors) == 1
   
 
-def test_validate_fewer_than_15_sibs():
+def test_fewer_than_15_sibs():
   # Family has more than 15 siblings
   families = [Family('F01', wife_id='I01', husband_id='I02', children = (['I01']*16))]
   gedcom = Gedcom(individuals=None, families=families)
