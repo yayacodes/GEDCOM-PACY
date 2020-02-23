@@ -1,11 +1,34 @@
 # Validation methods go here
-
+import datetime
 
 def validate_too_old_individual(gedcom):
     result = []
     for individual in gedcom.individuals:
         if individual.age > 150:
             result.append(f'Error: The individual {individual.name} ({individual.id}) is too old, age = {individual.age}.')
+    return result
+
+def validate_marriage_after_divorce(gedcom):
+    result = []
+    for family in gedcom.families:
+        if (family.married is not None and family.divorced is not None) and (family.married > family.divorced):
+            result.append(f'Error: Family {family.id} has divorce date before marriage date')
+    return result
+
+def validate_dates_before_current(gedcom):
+    result = []
+    today = datetime.datetime.now()
+    for family in gedcom.families:
+        if family.married is not None and family.married > today:
+            result.append(f'Error: The Family {family.id}\'s marriage date is after the current date')
+        if family.divorced is not None and family.divorced > today:
+            result.append(f'Error: The Family {family.id}\'s divorce date is after the current date')
+    for individual in gedcom.individuals:
+        if individual.birthday is not None and individual.birthday > today:
+            result.append(f'Error: The Individual {individual.id}\'s birthday is after the current date')
+        if individual.death is not None and individual.death > today:
+            result.append(f'Error: The Individual {individual.id}\'s deathdate is after the current date')  
+    
     return result
 
 def validate_corresponding_entries(gedcom):
@@ -62,10 +85,20 @@ def validate_marriage_after_fourteen(gedcom):
     
     return errors
 
-all_validators = [validate_marriage_after_fourteen, validate_corresponding_entries, validate_too_old_individual]
+
+def validate_fewer_than_15_sibs(gedcom):
+    errors = []
+    
+    for family in gedcom.families:
+        if len(family.children) > 15:
+            errors.append(f'Error: Family {family.id} has more than 15 siblings')
+    return errors
+
+all_validators = [validate_fewer_than_15_sibs, validate_dates_before_current, validate_marriage_after_fourteen, validate_corresponding_entries, validate_too_old_individual, validate_marriage_after_divorce]
 
 
 def validate_gedcom(gedcom):
     errors = []
     for validator in all_validators:
         errors.extend(validator(gedcom))
+    return errors
