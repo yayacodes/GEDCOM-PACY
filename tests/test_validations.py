@@ -10,7 +10,7 @@ def test_validate_too_old_individual():
     assert len(errors) == 1
     assert errors[0] == 'Error: The individual Morgan Freeman (I01) is too old, age = 151.'
 
-def test_corresponding_individuals():
+def test_corresponding_entries():
 
     def test(individuals, families, input_errors):
       gedcom = Gedcom(individuals=individuals, families=families)
