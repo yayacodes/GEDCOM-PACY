@@ -47,7 +47,7 @@ def validate_corresponding_entries(gedcom):
     
     return result
 
-all_validators = [validate_too_old_individual]
+all_validators = [validate_corresponding_entries, validate_too_old_individual]
 
 
 def validate_gedcom(gedcom):
