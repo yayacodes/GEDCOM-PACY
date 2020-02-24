@@ -1,0 +1,53 @@
+Individuals
++-----+----------------+-----+------------+-----+-------+------------+-------+--------+
+|  ID |      Name      | Sex |  Birthday  | Age | Alive |   Death    | Child | Spouse |
++-----+----------------+-----+------------+-----+-------+------------+-------+--------+
+| I01 | Morgan Freeman |  M  | 2050-01-01 |  50 | False | 2100-01-02 |  None |  None  |
+| I02 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+| I03 | Morgan Freeman |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
+| I04 |  Angie Monte   |  F  | 1960-01-01 |  60 |  True |     NA     |  None |  None  |
+| I05 | Morgan Freeman |  M  | 1980-01-01 |  0  | False | 1979-01-02 |  None |  None  |
+| I05 | Morgan Freeman |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
+| I06 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+| I06 |  Angie Monte   |  F  | 1882-01-01 | 138 |  True |     NA     |  None |  None  |
+| I07 | Morgan Freeman |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
+| I08 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+| I09 | Morgan Freeman |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
+| I10 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+| I11 | Morgan Freeman |  M  | 1800-01-01 | 151 | False | 1951-01-02 |  None |  None  |
+| I12 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
++-----+----------------+-----+------------+-----+-------+------------+-------+--------+
+Families
++-----+------------+------------+------------+----------------+---------+-------------+----------+
+|  ID |  Married   |  Divorced  | Husband ID |  Husband Name  | Wife ID |  Wife Name  | Children |
++-----+------------+------------+------------+----------------+---------+-------------+----------+
+| F01 | 2070-01-01 | 2001-01-01 |    I01     | Morgan Freeman |   I02   | Angie Monte |    []    |
+| F02 | 1979-01-01 |     NA     |    I03     | Morgan Freeman |   I04   | Angie Monte |    []    |
+| F03 | 2001-01-01 | 2000-01-01 |    I05     | Morgan Freeman |   I06   | Angie Monte |    []    |
+| F04 | 2001-01-01 |     NA     |    I07     | Morgan Freeman |   I08   | Angie Monte |    []    |
+| F05 |     NA     | 2001-01-01 |    I09     | Morgan Freeman |   I10   | Angie Monte |    []    |
++-----+------------+------------+------------+----------------+---------+-------------+----------+
+Error: US01: The Family F01's marriage date 2070-01-01 is after the current date
+Error: US01: The Individual I01's birthday 2050-01-01 is after the current date
+Error: US01: The Individual I01's deathdate 2100-01-02 is after the current date
+Error: US10: Spouse I03 in family F02 was married at less than 14 years old, age=40
+Error: US26: The family F01 contains spouse I02, but that individual does not list this family as a spouse
+Error: US26: The family F01 contains spouse I01, but that individual does not list this family as a spouse
+Error: US26: The family F02 contains spouse I04, but that individual does not list this family as a spouse
+Error: US26: The family F02 contains spouse I03, but that individual does not list this family as a spouse
+Error: US26: The family F03 contains spouse I06, but that individual does not list this family as a spouse
+Error: US26: The family F03 contains spouse I05, but that individual does not list this family as a spouse
+Error: US26: The family F04 contains spouse I08, but that individual does not list this family as a spouse
+Error: US26: The family F04 contains spouse I07, but that individual does not list this family as a spouse
+Error: US26: The family F05 contains spouse I10, but that individual does not list this family as a spouse
+Error: US26: The family F05 contains spouse I09, but that individual does not list this family as a spouse
+Error: US07: The individual Morgan Freeman (I11) is too old, age = 151.
+Error: US04: Family F01 has divorce date 2001-01-01 before marriage date 2070-01-01
+Error: US04: Family F03 has divorce date 2000-01-01 before marriage date 2001-01-01
+Error: US03: The individual Morgan Freeman (I05) has death before birth, death = 1979-01-02 00:00:00, birth = 1980-01-01 00:00:00
+Error: US02: The individual Morgan Freeman (I03) has marriage before birth, marriage = 1979-01-01 00:00:00, birth = 1980-01-01 00:00:00
+Error: US05: Family (F01) has the wife Angie Monte (I02) death date (01/02/10) before the marriage date (01/01/70)
+Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the marriage date (01/01/01)
+Error: US05: Family (F04) has the husband Morgan Freeman (I07) death date (01/02/00) before the marriage date (01/01/01)
+Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the divorce date (01/01/00)
+Error: US05: Family (F05) has the husband Morgan Freeman (I09) death date (01/02/00) before the divorce date (01/01/01)
