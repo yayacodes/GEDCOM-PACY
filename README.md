@@ -2,4 +2,8 @@
 CS/SSW 555 Group Project Repo
 
 TODO:
-- Meet @ 9:15 PM EST 
+- Execute Sprint 1
+- Demonstrate Results of Sprint 1
+- Review Sprint 1
+
+- Plan Sprint 2
