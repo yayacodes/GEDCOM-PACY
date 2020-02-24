@@ -161,10 +161,10 @@ def validate_divorce_before_death(gedcom):
             husband = gedcom.individual_with_id(family.husband_id)
             wife = gedcom.individual_with_id(family.wife_id)
             if husband.death < divorce_date:
-                result.append(f'Error: US05: Family ({family.id}) has the husband {husband.name} ({family.husband_id})'
+                result.append(f'Error: US06: Family ({family.id}) has the husband {husband.name} ({family.husband_id})'
                               f' death date ({husband.death.strftime("%x")}) before the divorce date ({divorce_date.strftime("%x")})')
             if wife.death < divorce_date:
-                result.append(f'Error: US05: Family ({family.id}) has the wife {wife.name} ({family.wife_id})'
+                result.append(f'Error: US06: Family ({family.id}) has the wife {wife.name} ({family.wife_id})'
                               f' death date ({wife.death.strftime("%x")}) before the divorce date ({divorce_date.strftime("%x")})')
     return result
 

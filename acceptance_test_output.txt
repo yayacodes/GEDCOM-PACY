@@ -49,5 +49,5 @@ Error: US02: The individual Morgan Freeman (I03) has marriage before birth, marr
 Error: US05: Family (F01) has the wife Angie Monte (I02) death date (01/02/10) before the marriage date (01/01/70)
 Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the marriage date (01/01/01)
 Error: US05: Family (F04) has the husband Morgan Freeman (I07) death date (01/02/00) before the marriage date (01/01/01)
-Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the divorce date (01/01/00)
-Error: US05: Family (F05) has the husband Morgan Freeman (I09) death date (01/02/00) before the divorce date (01/01/01)
+Error: US06: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the divorce date (01/01/00)
+Error: US06: Family (F05) has the husband Morgan Freeman (I09) death date (01/02/00) before the divorce date (01/01/01)

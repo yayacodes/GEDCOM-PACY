@@ -28,7 +28,7 @@ def test_divorce_before_death():
     gedcom = parse_gedcom('../res/divorce_before_death_test.ged')
     errors = validate_divorce_before_death(gedcom)
     assert len(errors) == 1
-    assert errors[0] == 'Error: US05: Family (F01) has the husband Morgan Freeman (I01) death date (01/02/00) before the divorce date (01/01/01)'
+    assert errors[0] == 'Error: US06: Family (F01) has the husband Morgan Freeman (I01) death date (01/02/00) before the divorce date (01/01/01)'
 
 def test_birth_before_death():
     parser = GedcomParser()
