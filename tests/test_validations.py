@@ -18,18 +18,18 @@ def test_validate_too_old_individual():
 
 def test_birth_before_death():
     parser = GedcomParser()
-    gedcom = parser.parse('res/pete_sprint1_tests.ged')
-    errors = birth_before_death(gedcom)
+    gedcom = parser.parse('../res/pete_sprint1_tests.ged')
+    errors = validation.birth_before_death(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: The individual Pete (@I1@) has death before birth, death = 1995-06-10 00:00:00, birth = 1996-05-18 00:00:00'
 
 def test_birth_brfore_marriage():
     parser = GedcomParser()
-    gedcom = parser.parse('res/pete_sprint1_tests.ged')
-    errors = birth_before_marriage(gedcom)
+    gedcom = parser.parse('../res/pete_sprint1_tests.ged')
+    errors = validation.birth_before_marriage(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: The individual Pete (@I1@) has marriage before birth, marriage = 1995-05-06 00:00:00, birth = 1996-05-18 00:00:00'
-    
+
 def test_corresponding_entries():
 
     def test(individuals, families, input_errors):
