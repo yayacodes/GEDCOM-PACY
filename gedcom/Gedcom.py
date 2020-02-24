@@ -70,6 +70,3 @@ class Gedcom:
     def family_with_id(self, id):
         family = [f for f in self.families if f.id == id]
         return family[0] if len(family) > 0 else None
-
-
-__all__ = Gedcom

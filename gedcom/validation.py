@@ -8,6 +8,43 @@ def validate_too_old_individual(gedcom):
             result.append(f'Error: The individual {individual.name} ({individual.id}) is too old, age = {individual.age}.')
     return result
 
+def birth_before_death(gedcom):
+    """
+        validationg that individuals birthday is before individuals death.
+    """
+    result = []
+    for individual in gedcom.individuals:
+        birth = individual.birthday
+        death = individual.death
+        
+        if death == None:
+            continue
+        elif death < birth:
+            result.append(f'Error: The individual {individual.name} ({individual.id}) has death before birth, death = {individual.death}, birth = {individual.birthday}')
+    
+    return result
+
+def birth_before_marriage(gedcom):
+    """
+        checking if individual was born before or after marriage
+    """
+    result = []
+
+    for family in gedcom.families:
+        mariage_date = family.married
+
+        husband = gedcom.individual_with_id(family.husband_id)
+        wife = gedcom.individual_with_id(family.wife_id)
+
+        if not mariage_date:
+            continue
+        if husband.birthday and husband.birthday > mariage_date:
+            result.append(f'Error: The individual {husband.name} ({husband.id}) has marriage before birth, marriage = {mariage_date}, birth = {husband.birthday}')
+        if wife.birthday and wife.birthday > mariage_date:
+            result.append(f'Error: The individual {wife.name} ({wife.id}) has marriage before birth, marriage = {mariage_date}, birth = {wife.birthday}')
+
+    return result
+
 def validate_marriage_after_divorce(gedcom):
     result = []
     for family in gedcom.families:
@@ -85,7 +122,6 @@ def validate_marriage_after_fourteen(gedcom):
     
     return errors
 
-
 def validate_fewer_than_15_sibs(gedcom):
     errors = []
     
@@ -94,7 +130,16 @@ def validate_fewer_than_15_sibs(gedcom):
             errors.append(f'Error: Family {family.id} has more than 15 siblings')
     return errors
 
-all_validators = [validate_fewer_than_15_sibs, validate_dates_before_current, validate_marriage_after_fourteen, validate_corresponding_entries, validate_too_old_individual, validate_marriage_after_divorce]
+all_validators = [
+    validate_fewer_than_15_sibs, 
+    validate_dates_before_current, 
+    validate_marriage_after_fourteen, 
+    validate_corresponding_entries, 
+    validate_too_old_individual, 
+    validate_marriage_after_divorce, 
+    birth_before_death, 
+    birth_before_marriage
+]
 
 
 def validate_gedcom(gedcom):
