@@ -1,6 +1,8 @@
 import attr
 from prettytable import PrettyTable
 
+from gedcom.Individual import Individual
+
 
 @attr.s
 class Gedcom:
