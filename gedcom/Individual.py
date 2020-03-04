@@ -10,7 +10,8 @@ class Individual:
     birthday: datetime = attr.ib(default=None)
     death = datetime = attr.ib(default=None)
     child = attr.ib(default=None)
-    spouse = attr.ib(default=None)
+    spouse = attr.ib(default=None) # DEPRECATED -- Old usage of spouse
+    spouses = attr.ib(factory=list) # List of all families for which they are a spouse
     kind = 'INDI'
 
     @property

@@ -114,7 +114,8 @@ class GedcomParser:
                 if row.tag == 'FAMC':
                     record.child = row.arg
                 if row.tag == 'FAMS':
-                    record.spouse = row.arg 
+                    record.spouse = row.arg
+                    record.spouses.append(row.arg)
 
             # Get attributes for family from row
             if first_row.tag == 'FAM':
