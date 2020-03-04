@@ -168,6 +168,16 @@ def validate_divorce_before_death(gedcom):
                               f' death date ({wife.death.strftime("%x")}) before the divorce date ({divorce_date.strftime("%x")})')
     return result
 
+def validate_no_bigamy(gedcom):
+    """
+        Marriage should not occur during marriage to another spouse
+    """
+    # For every family
+    # If there's a marriage date,
+    # for each of the spouses
+    # for every family that spouse is apart of
+    # make sure that marriage date isn't the same date as this family
+
 all_validators = [
     validate_fewer_than_15_sibs, 
     validate_dates_before_current, 
@@ -178,7 +188,8 @@ all_validators = [
     birth_before_death, 
     birth_before_marriage,
     validate_marriage_before_death,
-    validate_divorce_before_death
+    validate_divorce_before_death,
+    validate_no_bigamy
 ]
 
 
