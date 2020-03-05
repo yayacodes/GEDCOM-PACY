@@ -114,13 +114,13 @@ def test_corresponding_entries():
 
     # Individual lists family as spouse, family does not list individual
     test(
-      [Individual('I01', spouse='F01')],
+      [Individual('I01', spouses=['F01'])],
       [Family('F01')],
       ['Error: US26: The individual I01 says they are a spouse of family F01, but that family does not list this individual as a spouse']
     )
     # Individual lists family as spouse, family lists another individual who does not exist
     test(
-      [Individual('I01', spouse='F01')],
+      [Individual('I01', spouses=['F01'])],
       [Family('F01', husband_id='I02')],
       [
         'Error: US26: The individual I01 says they are a spouse of family F01, but that family does not list this individual as a spouse',
@@ -129,7 +129,7 @@ def test_corresponding_entries():
     )
     # Individual lists family as spouse, family lists another individual, other individual doesn't list family
     test(
-      [Individual('I01', spouse='F01'), Individual('I02', spouse='F02')],
+      [Individual('I01', spouses=['F01']), Individual('I02', spouses=['F02'])],
       [Family('F01', wife_id='I02')],
       [
         'Error: US26: The individual I01 says they are a spouse of family F01, but that family does not list this individual as a spouse',
@@ -148,7 +148,7 @@ def test_corresponding_entries():
     )
     # Family lists individual as spouse, spouse lists another family that does not exist
     test(
-      [Individual('I01', spouse='F02')],
+      [Individual('I01', spouses=['F02'])],
       [Family('F01', husband_id='I01')],
       [
         'Error: US26: The individual I01 says they are a spouse of family F02, but that family has no record',
@@ -157,7 +157,7 @@ def test_corresponding_entries():
     )
     # Family lists individual as spouse, spouse lists another family, other family doesnt list individual
     test(
-      [Individual('I01', spouse='F02')],
+      [Individual('I01', spouses=['F02'])],
       [Family('F01', husband_id='I01'), Family('F02')],
       [
         'Error: US26: The individual I01 says they are a spouse of family F02, but that family does not list this individual as a spouse',
@@ -167,19 +167,19 @@ def test_corresponding_entries():
 
     # Records line up for one individual one family spouse
     test(
-      [Individual('I01', spouse='F01')],
+      [Individual('I01', spouses=['F01'])],
       [Family('F01', husband_id='I01')],
       []
     )
     test(
-      [Individual('I01', spouse='F01')],
+      [Individual('I01', spouses=['F01'])],
       [Family('F01', wife_id='I01')],
       []
     )
 
     # Records line up for two individuals one family spouse
     test(
-      [Individual('I01', spouse='F01'), Individual('I02', spouse='F01')],
+      [Individual('I01', spouses=['F01']), Individual('I02', spouses=['F01'])],
       [Family('F01', husband_id='I01', wife_id='I02')],
       []
     )
@@ -302,21 +302,21 @@ def test_validate_no_bigamy():
   assert len(errors) == 1
 
   # Spouse 1 got married to spouse 3 during marriage to spouse 2
-  # families = [ 
-  #   Family('f01', married=datetime(2000, 10, 10), divorced=datetime(2010, 10, 10), husband_id='i01', wife_id='i02'),
-  #   Family('f02', married=datetime(2005, 10, 10), husband_id='i01', wife_id='i03')
-  # ]
+  families = [ 
+    Family('f01', married=datetime(2000, 10, 10), divorced=datetime(2010, 10, 10), husband_id='i01', wife_id='i02'),
+    Family('f02', married=datetime(2005, 10, 10), husband_id='i01', wife_id='i03')
+  ]
 
-  # individuals = [
-  #   Individual('i01', spouses=['f01', 'f02']),
-  #   Individual('i02', spouses=['f01']),
-  #   Individual('i03', spouses=['f02'])
-  # ]
+  individuals = [
+    Individual('i01', spouses=['f01', 'f02']),
+    Individual('i02', spouses=['f01']),
+    Individual('i03', spouses=['f02'])
+  ]
 
-  # gedcom = Gedcom(individuals=individuals, families=families)
-  # errors = validation.validate_no_bigamy(gedcom)
-  # assert errors[0] == 'Error: US11: Individual i01 married i03 on 10-10-2005, which was during their marriage to i02'
-  # assert len(errors) == 1
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_no_bigamy(gedcom)
+  assert errors[0] == 'Error: US11: Individual i01 married i03 on 10-10-2005, which was during their marriage to i02'
+  assert len(errors) == 1
 
   # Spouse 1 married Spouse 2, got divorced, and then married Spouse 3
   families = [ 

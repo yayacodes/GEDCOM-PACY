@@ -80,12 +80,13 @@ def validate_corresponding_entries(gedcom):
             elif individual.id not in family.children:
                 result.append(f'Error: US26: The individual {individual.id} says they are a child of family {family.id}, but that family does not list this individual as a child')
         
-        if individual.spouse is not None:
-            family = family = gedcom.family_with_id(individual.spouse)
-            if family is None:
-                result.append(f'Error: US26: The individual {individual.id} says they are a spouse of family {individual.spouse}, but that family has no record')
-            elif not family.husband_id == individual.id and not family.wife_id == individual.id:
-                result.append(f'Error: US26: The individual {individual.id} says they are a spouse of family {family.id}, but that family does not list this individual as a spouse')
+        for spouse_family in individual.spouses:
+            if spouse_family is not None:
+                family = gedcom.family_with_id(spouse_family)
+                if family is None:
+                    result.append(f'Error: US26: The individual {individual.id} says they are a spouse of family {spouse_family}, but that family has no record')
+                elif not family.husband_id == individual.id and not family.wife_id == individual.id:
+                    result.append(f'Error: US26: The individual {individual.id} says they are a spouse of family {family.id}, but that family does not list this individual as a spouse')
             
     # Make sure every family member's individual record also mentions the family
     for family in gedcom.families:
@@ -94,7 +95,7 @@ def validate_corresponding_entries(gedcom):
                 spouse = gedcom.individual_with_id(spouse_id)
                 if spouse is None:
                     result.append(f'Error: US26: The family {family.id} contains spouse {spouse_id}, but that individual has no record')
-                elif spouse.spouse != family.id:
+                elif family.id not in spouse.spouses:
                     result.append(f'Error: US26: The family {family.id} contains spouse {spouse_id}, but that individual does not list this family as a spouse')
 
         if family.children is not None and len(family.children) > 0:
@@ -212,8 +213,7 @@ all_validators = [
     birth_before_death, 
     birth_before_marriage,
     validate_marriage_before_death,
-    validate_divorce_before_death,
-    validate_no_bigamy
+    validate_divorce_before_death
 ]
 
 
