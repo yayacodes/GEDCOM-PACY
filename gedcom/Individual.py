@@ -11,6 +11,7 @@ class Individual:
     death = datetime = attr.ib(default=None)
     child = attr.ib(default=None)
     spouse = attr.ib(default=None)
+    spouses = attr.ib(factory=list)
     kind = 'INDI'
 
     @property
