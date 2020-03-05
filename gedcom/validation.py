@@ -213,7 +213,8 @@ all_validators = [
     birth_before_death, 
     birth_before_marriage,
     validate_marriage_before_death,
-    validate_divorce_before_death
+    validate_divorce_before_death,
+    validate_no_bigamy
 ]
 
 
