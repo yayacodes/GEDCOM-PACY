@@ -204,12 +204,19 @@ def validate_no_bigamy(gedcom):
     return errors
 
 def validate_correct_gender(gedcom):
+    """
+        Husband in family should be male and wife in family should be female
+    """
     result = []
     for family in gedcom.families:
         if family.husband_id != None:
             husband = gedcom.individual_with_id(family.husband_id)
             if husband.sex != "M":
                 result.append(f'Error: US21: Husband {husband.id} in Family {family.id} should be male')
+        if family.wife_id != None:
+            wife = gedcom.individual_with_id(family.wife_id)
+            if wife.sex != "F":
+                result.append(f'Error: US21: Wife {wife.id} in Family {family.id} should be female')
     return result
 
 
