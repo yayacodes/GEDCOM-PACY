@@ -272,3 +272,64 @@ def test_fewer_than_15_sibs():
   errors = validation.validate_fewer_than_15_sibs(gedcom)
   assert errors[0] == 'Error: US15: Family F01 has more than 15 siblings'
   assert len(errors) == 1
+
+def test_validate_no_bigamy():
+  # Spouse 1 and Spouse 2 each don't have another marriage
+  families = [ Family('f01', married=datetime(2000, 10, 10), husband_id='i01', wife_id='i02') ]
+  individuals = [
+    Individual('i01', spouses=['f01']),
+    Individual('i02', spouses=['f01'])
+  ]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_no_bigamy(gedcom)
+  assert len(errors) == 0
+
+  # Spouse 1 got married to Spouse 3 during still-existing marriage to Spouse 2
+  families = [ 
+    Family('f01', married=datetime(2000, 10, 10), husband_id='i01', wife_id='i02'),
+    Family('f02', married=datetime(2005, 10, 10), husband_id='i01', wife_id='i03')
+  ]
+
+  individuals = [
+    Individual('i01', spouses=['f01', 'f02']),
+    Individual('i02', spouses=['f01']),
+    Individual('i03', spouses=['f02'])
+  ]
+
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_no_bigamy(gedcom)
+  assert errors[0] == 'Error: US11: Individual i01 married i03 on 10-10-2005, which was during their marriage to i02'
+  assert len(errors) == 1
+
+  # Spouse 1 got married to spouse 3 during marriage to spouse 2
+  families = [ 
+    Family('f01', married=datetime(2000, 10, 10), divorced=datetime(2010, 10, 10), husband_id='i01', wife_id='i02'),
+    Family('f02', married=datetime(2005, 10, 10), husband_id='i01', wife_id='i03')
+  ]
+
+  individuals = [
+    Individual('i01', spouses=['f01', 'f02']),
+    Individual('i02', spouses=['f01']),
+    Individual('i03', spouses=['f02'])
+  ]
+
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_no_bigamy(gedcom)
+  assert errors[0] == 'Error: US11: Individual i01 married i03 on 10-10-2005, which was during their marriage to i02'
+  assert len(errors) == 1
+
+  # Spouse 1 married Spouse 2, got divorced, and then married Spouse 3
+  families = [ 
+    Family('f01', married=datetime(2000, 10, 10), divorced=datetime(2010, 10, 10), husband_id='i01', wife_id='i02'),
+    Family('f02', married=datetime(2012, 10, 10), husband_id='i01', wife_id='i03')
+  ]
+
+  individuals = [
+    Individual('i01', spouses=['f01', 'f02']),
+    Individual('i02', spouses=['f01']),
+    Individual('i03', spouses=['f02'])
+  ]
+
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_no_bigamy(gedcom)
+  assert len(errors) == 0

@@ -169,6 +169,40 @@ def validate_divorce_before_death(gedcom):
                               f' death date ({wife.death.strftime("%x")}) before the divorce date ({divorce_date.strftime("%x")})')
     return result
 
+def validate_no_bigamy(gedcom):
+    """
+        Marriage should not occur during marriage to another spouse
+    """
+
+    def format_date(date):
+        return date.strftime('%d-%m-%Y')
+
+    errors = []
+    # For every family
+    for family1 in [x for x in gedcom.families if x is not None]:
+    # If there's a marriage date,
+    # for each of the spouses
+        for spouse in [family1.husband_id, family1.wife_id]:
+            spouse = gedcom.individual_with_id(spouse)
+
+            if spouse is not None:
+                # for every family that spouse is apart of
+                # make sure that marriage date isn't during the marriage of family 1
+                for family2 in spouse.spouses:
+                    family2 = gedcom.family_with_id(family2)
+                    marriage_end_date = family1.divorced if family1.divorced is not None else datetime.datetime.now()
+
+                    if marriage_end_date is not None and family2.married > family1.married and family2.married <= marriage_end_date:
+                        print(':', family1, family2)
+                        family2_spouse = family2.husband_id if family2.husband_id is not spouse.id else family2.wife_id
+                        family2_spouse = gedcom.individual_with_id(family2_spouse)
+
+                        family1_spouse = family1.husband_id if family1.husband_id is not spouse.id else family1.wife_id
+                        family1_spouse = gedcom.individual_with_id(family1_spouse)
+
+                        errors.append(f'Error: US11: Individual {spouse.id} married {family2_spouse.id} on {format_date(family2.married)}, which was during their marriage to {family1_spouse.id}')
+    return errors
+
 all_validators = [
     validate_fewer_than_15_sibs, 
     validate_dates_before_current, 
@@ -179,7 +213,8 @@ all_validators = [
     birth_before_death, 
     birth_before_marriage,
     validate_marriage_before_death,
-    validate_divorce_before_death
+    validate_divorce_before_death,
+    validate_no_bigamy
 ]
 
 
