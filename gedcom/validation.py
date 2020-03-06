@@ -203,6 +203,17 @@ def validate_no_bigamy(gedcom):
                         errors.append(f'Error: US11: Individual {spouse.id} married {family2_spouse.id} on {format_date(family2.married)}, which was during their marriage to {family1_spouse.id}')
     return errors
 
+def validate_correct_gender(gedcom):
+    result = []
+    for family in gedcom.families:
+        if family.husband_id != None:
+            husband = gedcom.individual_with_id(family.husband_id)
+            if husband.sex != "M":
+                result.append(f'Error: US21: Husband {husband.id} in Family {family.id} should be male')
+    return result
+
+
+
 all_validators = [
     validate_fewer_than_15_sibs, 
     validate_dates_before_current, 
@@ -214,7 +225,8 @@ all_validators = [
     birth_before_marriage,
     validate_marriage_before_death,
     validate_divorce_before_death,
-    validate_no_bigamy
+    validate_no_bigamy,
+    validate_correct_gender
 ]
 
 
