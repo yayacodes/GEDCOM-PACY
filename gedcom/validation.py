@@ -205,6 +205,26 @@ def validate_no_bigamy(gedcom):
     return errors
 
 
+def validate_male_last_last_name(gedcom):
+    """
+    US16: All male members of a family should have the same last name
+    """
+    errors = []
+    for family in gedcom.families:
+        if len(family.children) == 0:
+            continue  # Nothing to check here
+        husband = gedcom.individual_with_id(family.husband_id)
+        if husband is not None:
+            family_lastname = husband.last_name
+        else:
+            family_lastname = gedcom.individual_with_id(family.children[0]).last_name  # Family name is the name of first child
+        for child_id in family.children:
+            child = gedcom.individual_with_id(child_id)
+            if child.sex == 'M' and child.last_name != family_lastname:
+                errors.append(f"Error: US16: Individual {child.id} last name ({child.last_name}) doesn't follow the family last name ({family_lastname})")
+
+    return errors
+
 def validate_sibling_spacing(gedcom):
     """
     US13: Birth dates of siblings should be more than 8 months apart or less than 2 days apart (twins may be born one day apart, e.g. 11:59 PM and 12:02 AM the following calendar day)
@@ -234,6 +254,7 @@ all_validators = [
     validate_marriage_before_death,
     validate_divorce_before_death,
     validate_no_bigamy,
+    validate_male_last_last_name,
     validate_sibling_spacing
 ]
 

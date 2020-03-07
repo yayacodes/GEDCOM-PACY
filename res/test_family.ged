@@ -133,6 +133,28 @@
 1 DEAT
 2 DATE 02 JAN 2010
 0 NOTE ****************
+0 NOTE *** US16 Male last names ***
+0 I13 INDI
+1 NAME Morgan /Freeman/
+1 BIRT
+2 DATE 01 JAN 1800
+1 SEX M
+0 I14 INDI
+1 NAME David /Chang/
+1 SEX M
+1 BIRT
+2 DATE 01 JAN 1800
+0 I15 INDI
+1 NAME Sarah /Monte/
+1 SEX F
+1 BIRT
+2 DATE 01 JAN 1800
+0 F05 FAM
+1 HUSB I13
+1 CHIL I14
+1 CHIL I15
+0 TRLR
+0 NOTE ****************
 0 NOTE *** US13 Sibling spacing ***
 0 I13 INDI
 1 NAME Morgan /Freeman/
