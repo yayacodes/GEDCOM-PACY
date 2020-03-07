@@ -254,7 +254,7 @@ all_validators = [
     validate_marriage_before_death,
     validate_divorce_before_death,
     validate_no_bigamy,
-    validate_male_last_last_name
+    validate_male_last_last_name,
     validate_sibling_spacing
 ]
 
