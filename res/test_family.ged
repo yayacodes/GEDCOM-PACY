@@ -133,3 +133,24 @@
 1 DEAT
 2 DATE 02 JAN 2010
 0 NOTE ****************
+0 NOTE *** US13 Sibling spacing ***
+0 I13 INDI
+1 NAME Morgan /Freeman/
+1 SEX M
+1 BIRT
+2 DATE 01 JAN 2010
+0 I14 INDI
+1 NAME David /Freeman/
+1 SEX M
+1 BIRT
+2 DATE 01 MAY 2010
+0 I15 INDI
+1 NAME Sarah /Freeman/
+1 SEX F
+1 BIRT
+2 DATE 01 OCT 2010
+0 F06 FAM
+1 CHIL I13
+1 CHIL I14
+1 CHIL I15
+0 NOTE ****************

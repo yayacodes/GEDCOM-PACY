@@ -1,5 +1,6 @@
 # Validation methods go here
 import datetime
+from itertools import combinations
 
 def validate_too_old_individual(gedcom):
     result = []
@@ -220,6 +221,22 @@ def validate_correct_gender(gedcom):
     return result
 
 
+def validate_sibling_spacing(gedcom):
+    """
+    US13: Birth dates of siblings should be more than 8 months apart or less than 2 days apart (twins may be born one day apart, e.g. 11:59 PM and 12:02 AM the following calendar day)
+    """
+    errors = []
+    for family in gedcom.families:
+        if len(family.children) <= 1: continue
+        for pair in combinations(family.children, 2):
+            child1 = gedcom.individual_with_id(pair[0])
+            child2 = gedcom.individual_with_id(pair[1])
+            if child1 and child2:
+                spacing = abs(child1.birthday - child2.birthday).days
+                if spacing > 1 and spacing/30.44 < 8:
+                    errors.append(f'Error: US13: Child {child1.name} ({child1.id}) in family {family.id} has unrealistic birthday gap ({spacing} days) to his sibling {child2.name} ({child2.id})')
+    return errors
+
 
 all_validators = [
     validate_fewer_than_15_sibs, 
@@ -233,7 +250,8 @@ all_validators = [
     validate_marriage_before_death,
     validate_divorce_before_death,
     validate_no_bigamy,
-    validate_correct_gender
+    validate_correct_gender,
+    validate_sibling_spacing
 ]
 
 
