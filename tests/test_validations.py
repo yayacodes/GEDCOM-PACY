@@ -333,3 +333,43 @@ def test_validate_no_bigamy():
   gedcom = Gedcom(individuals=individuals, families=families)
   errors = validation.validate_no_bigamy(gedcom)
   assert len(errors) == 0
+
+
+def test_validate_male_last_names_all_last_names_valid():
+    families = [Family('F01', married=datetime(2000, 10, 10), husband_id='I01', wife_id='I02', children=['I03', 'I04'])]
+    individuals = [
+        Individual('I01', first_name='Morgan', last_name='Freeman'),
+        Individual('I03', first_name='David', last_name='Freeman', sex='M'),
+        Individual("I04", first_name='Sarah', last_name='Freeman', sex="F")
+    ]
+
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_male_last_last_name(gedcom)
+    assert len(errors) == 0
+
+
+def test_validate_male_last_names_invalid_last_name():
+    families = [Family('F01', married=datetime(2000, 10, 10), husband_id='I01', wife_id='I02', children=['I03', 'I04'])]
+    individuals = [
+        Individual('I01', first_name='Morgan', last_name='Freeman'),
+        Individual('I03', first_name='David', last_name='Mike', sex="M"),
+        Individual('I04', first_name='Sarah', last_name='Mike', sex="F")
+    ]
+
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_male_last_last_name(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == "Error: US16: Individual I03 last name (Mike) doesn't follow the family last name (Freeman)"
+
+
+def test_validate_male_last_names_invalid_last_name_no_father():
+    families = [Family('F01', married=datetime(2000, 10, 10), wife_id='I02', children=['I03', 'I04'])]
+    individuals = [
+        Individual('I03', first_name='David', last_name='Freeman', sex='M'),
+        Individual('I04', first_name='Mike', last_name='Mike', sex='M')
+    ]
+
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_male_last_last_name(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == "Error: US16: Individual I04 last name (Mike) doesn't follow the family last name (Freeman)"
