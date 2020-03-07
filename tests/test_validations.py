@@ -333,3 +333,41 @@ def test_validate_no_bigamy():
   gedcom = Gedcom(individuals=individuals, families=families)
   errors = validation.validate_no_bigamy(gedcom)
   assert len(errors) == 0
+
+
+def test_validate_sibling_spacing_more_than_8_month():
+    families = [Family('F01', married=datetime(2000, 10, 10), children=['I01', 'I02'])]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', birthday=datetime(2010, 1, 1)),
+        Individual('I02', name='David Freeman', birthday=datetime(2010, 10, 1)),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_sibling_spacing(gedcom)
+    assert len(errors) == 0
+
+
+def test_validate_sibling_spacing_less_than_2_days():
+    families = [Family('F01', married=datetime(2000, 10, 10), children=['I01', 'I02'])]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', birthday=datetime(2010, 1, 1)),
+        Individual('I02', name='David Freeman', birthday=datetime(2010, 1, 2)),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_sibling_spacing(gedcom)
+    assert len(errors) == 0
+
+
+def test_validate_sibling_spacing_unrealistic():
+    families = [Family('F01', married=datetime(2000, 10, 10), children=['I01', 'I02', 'I03'])]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', birthday=datetime(2010, 1, 1)),
+        Individual('I02', name='David Freeman', birthday=datetime(2010, 5, 3)),
+        Individual('I03', name='Sarah Freeman', birthday=datetime(2010, 10, 3))
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_sibling_spacing(gedcom)
+    assert len(errors) == 2
+    assert errors[0] == "Error: US13: Child Morgan Freeman (I01) in family F01 has unrealistic birthday gap (122 days) to his sibling David Freeman (I02)"
+    assert errors[1] == "Error: US13: Child David Freeman (I02) in family F01 has unrealistic birthday gap (153 days) to his sibling Sarah Freeman (I03)"
+
+
