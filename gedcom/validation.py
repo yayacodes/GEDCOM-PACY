@@ -1,6 +1,7 @@
 # Validation methods go here
 import datetime
 from itertools import combinations
+from collections import defaultdict
 
 def validate_too_old_individual(gedcom):
     result = []
@@ -242,6 +243,72 @@ def validate_sibling_spacing(gedcom):
     return errors
 
 
+def validate_parents_not_too_old(gedcom):
+    """
+        mother should be atmost 60 years older and father should be atmost 80 years older than the children
+    """
+
+    errors = []
+
+    for family in gedcom.families:
+        child_list = family.children
+        husband = gedcom.individual_with_id(family.husband_id)
+        wife = gedcom.individual_with_id(family.wife_id)
+
+        if child_list != None:
+            for child in child_list:
+                indi = gedcom.individual_with_id(child)
+                childs_age = indi.age
+            
+                if husband == None and wife == None:
+                    continue
+
+                if husband == None and wife != None:
+                    moms_age = wife.age
+                    if moms_age - childs_age > 60:
+                        errors.append(f'Error: US12: parents {wife.name} too old for child {indi.name}')
+
+                if wife == None and husband != None:
+                    dads_age = husband.age
+                    if dads_age - childs_age > 80:
+                        errors.append(f'Error: US12: parents {husband.name} too old for child {indi.name}')
+
+                if husband != None and wife != None:
+                    moms_age = wife.age
+                    dads_age = husband.age
+                    if (moms_age - childs_age > 60) or (dads_age - childs_age > 80):
+                        errors.append(f'Error: US12: parents {husband.name}/{wife.name} too old for child {indi.name}')
+
+    return errors
+    
+def validate_multiple_births(gedcom):
+    """
+        no more than 5 siblings should be born at the same time
+    """
+
+    errors = []
+    birth = []
+    birthdays = defaultdict(int)
+
+    for family in gedcom.families:
+        child_list = family.children
+
+        if len(child_list)<5:
+            continue
+        else:
+            for child in child_list:
+                birth.append(gedcom.individual_with_id(child).birthday)
+
+        for item in birth:
+            birthdays[item] += 1
+
+        for births in birthdays.values():
+            if births > 5:
+                errors.append(f'Error: US14: For family with id {family.id} there are more than 5 births at the same time')
+
+    return errors
+
+
 all_validators = [
     validate_fewer_than_15_sibs, 
     validate_dates_before_current, 
@@ -255,7 +322,9 @@ all_validators = [
     validate_divorce_before_death,
     validate_no_bigamy,
     validate_male_last_last_name,
-    validate_sibling_spacing
+    validate_sibling_spacing,
+    validate_parents_not_too_old,
+    validate_multiple_births
 ]
 
 

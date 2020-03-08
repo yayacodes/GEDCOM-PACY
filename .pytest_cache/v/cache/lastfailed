@@ -1,4 +1,9 @@
 {
-  "tests/test_gedcom_parser.py": true,
-  "tests/test_validations.py": true
+  "tests/test_validations.py::test_birth_before_death": true,
+  "tests/test_validations.py::test_birth_before_marriage": true,
+  "tests/test_validations.py::test_divorce_before_death": true,
+  "tests/test_validations.py::test_marriage_before_death": true,
+  "tests/test_validations.py::test_validate_multiple_births": true,
+  "tests/test_validations.py::test_validate_parents_not_too_old": true,
+  "tests/test_validations.py::test_validate_too_old_individual": true
 }
