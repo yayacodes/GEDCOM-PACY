@@ -338,7 +338,7 @@ all_validators = [
     validate_divorce_before_death,
     validate_no_bigamy,
     validate_correct_gender,
-    validate_sibling_spacing
+    validate_sibling_spacing,
     validate_male_last_last_name,
     validate_parents_not_too_old,
     validate_multiple_births
