@@ -101,9 +101,19 @@ class GedcomParser:
             if row.level > 1:
                 next
 
+            def name_part_of(name, part="first"):
+                if "/" in name:
+                    return name[:name.find("/")].strip() if part == "first" else name[name.find("/") + 1:name.rfind("/")]
+                elif " " in name:
+                    return name[:name.find(" ")] if part == "first" else name[name.find(" "):].strip()
+                else:
+                    return name if part == "first" else ""
+
             # Get attributes for individual from row
             if first_row.tag == 'INDI':
                 if row.tag == 'NAME':
+                    record.first_name = name_part_of(row.arg, "first")
+                    record.last_name = name_part_of(row.arg, "last")
                     record.name = row.arg.replace('/', '')
                 if row.tag == 'SEX':
                     record.sex = row.arg

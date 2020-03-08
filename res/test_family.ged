@@ -133,6 +133,28 @@
 1 DEAT
 2 DATE 02 JAN 2010
 0 NOTE ****************
+0 NOTE *** US16 Male last names ***
+0 I13 INDI
+1 NAME Morgan /Freeman/
+1 BIRT
+2 DATE 01 JAN 1800
+1 SEX M
+0 I14 INDI
+1 NAME David /Chang/
+1 SEX M
+1 BIRT
+2 DATE 01 JAN 1800
+0 I15 INDI
+1 NAME Sarah /Monte/
+1 SEX F
+1 BIRT
+2 DATE 01 JAN 1800
+0 F05 FAM
+1 HUSB I13
+1 CHIL I14
+1 CHIL I15
+0 TRLR
+0 NOTE ****************
 0 NOTE *** US13 Sibling spacing ***
 0 I13 INDI
 1 NAME Morgan /Freeman/
@@ -154,3 +176,89 @@
 1 CHIL I14
 1 CHIL I15
 0 NOTE ****************
+0 NOTE *** US12 and 14 parents not too old and no multiple births ***
+0 I16 INDI
+1 NAME John /Cena/
+2 GIVN John
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 I17 INDI
+1 NAME Shawn /Cena/
+2 GIVN Shawn
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 1915
+1 FAMS F07
+0 I18 INDI
+1 NAME Amanda /Something/
+2 GIVN Amanda
+2 SURN Something
+2 _MARNM Cena
+1 SEX F
+1 BIRT
+2 DATE 1 JAN 1935
+1 FAMS F07
+0 I19 INDI
+1 NAME Dwane /Cena/
+2 GIVN Dwane
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 I20 INDI
+1 NAME Kane /Cena/
+2 GIVN Kane
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 I21 INDI
+1 NAME Raymisterio /Cena/
+2 GIVN Raymisterio
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 I22 INDI
+1 NAME Ronda /Cena/
+2 GIVN Ronda
+2 SURN Cena
+2 _MARNM Cena
+1 SEX F
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 I23 INDI
+1 NAME Bigshow /Cena/
+2 GIVN Bigshow
+2 SURN Cena
+2 _MARNM Cena
+1 SEX M
+1 BIRT
+2 DATE 1 JAN 2000
+1 FAMC F07
+0 F07 FAM
+1 MARR
+2 DATE 10 OCT 2010
+1 HUSB I17
+1 WIFE I18
+1 CHIL I16
+1 CHIL I19
+1 CHIL I20
+1 CHIL I21
+1 CHIL I22
+1 CHIL I23
+1 _CURRENT Y
+0 TRLR

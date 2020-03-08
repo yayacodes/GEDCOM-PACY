@@ -5,7 +5,9 @@ from datetime import datetime
 @attr.s
 class Individual:
     id: str = attr.ib()
-    name: str = attr.ib(default=None)
+    name: str = attr.ib(default="")
+    first_name: str = attr.ib(default="")
+    last_name: str = attr.ib(default="")
     sex: str = attr.ib(default=None)
     birthday: datetime = attr.ib(default=None)
     death = datetime = attr.ib(default=None)
