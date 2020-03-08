@@ -409,3 +409,19 @@ def test_validate_sibling_spacing_unrealistic():
     assert errors[1] == "Error: US13: Child David Freeman (I02) in family F01 has unrealistic birthday gap (153 days) to his sibling Sarah Freeman (I03)"
 
 
+def test_validate_parents_not_too_old():
+  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  errors = validate_parents_not_too_old(gedcom)
+  assert len(errors) == 6
+  assert errors[0] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child John Cena'
+  assert errors[1] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Dwane Cena'
+  assert errors[2] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Kane Cena'
+  assert errors[3] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Raymisterio Cena'
+  assert errors[4] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Ronda Cena'
+  assert errors[5] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Bigshow Cena'
+
+def test_validate_multiple_births():
+  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  errors = validate_multiple_births(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US14: For family with id @F1@ there are more than 5 births at the same time'
