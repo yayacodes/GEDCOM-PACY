@@ -205,6 +205,22 @@ def validate_no_bigamy(gedcom):
                         errors.append(f'Error: US11: Individual {spouse.id} married {family2_spouse.id} on {format_date(family2.married)}, which was during their marriage to {family1_spouse.id}')
     return errors
 
+def validate_correct_gender(gedcom):
+    """
+        Husband in family should be male and wife in family should be female
+    """
+    result = []
+    for family in gedcom.families:
+        if family.husband_id != None:
+            husband = gedcom.individual_with_id(family.husband_id)
+            if husband is not None and husband.sex != "M":
+                result.append(f'Error: US21: Husband {husband.id} in Family {family.id} should be male')
+        if family.wife_id != None:
+            wife = gedcom.individual_with_id(family.wife_id)
+            if wife is not None and wife.sex != "F":
+                result.append(f'Error: US21: Wife {wife.id} in Family {family.id} should be female')
+    return result
+
 
 def validate_male_last_last_name(gedcom):
     """
@@ -215,12 +231,17 @@ def validate_male_last_last_name(gedcom):
         if len(family.children) == 0:
             continue  # Nothing to check here
         husband = gedcom.individual_with_id(family.husband_id)
+        family_lastname = None
         if husband is not None:
             family_lastname = husband.last_name
-        else:
-            family_lastname = gedcom.individual_with_id(family.children[0]).last_name  # Family name is the name of first child
         for child_id in family.children:
             child = gedcom.individual_with_id(child_id)
+            if child is None or child.last_name is None:
+                continue
+            
+            if family_lastname is None:
+                family_lastname = child.last_name
+
             if child.sex == 'M' and child.last_name != family_lastname:
                 errors.append(f"Error: US16: Individual {child.id} last name ({child.last_name}) doesn't follow the family last name ({family_lastname})")
 
@@ -258,6 +279,9 @@ def validate_parents_not_too_old(gedcom):
         if child_list != None:
             for child in child_list:
                 indi = gedcom.individual_with_id(child)
+                if indi is None:
+                    continue 
+                
                 childs_age = indi.age
             
                 if husband == None and wife == None:
@@ -297,7 +321,10 @@ def validate_multiple_births(gedcom):
             continue
         else:
             for child in child_list:
-                birth.append(gedcom.individual_with_id(child).birthday)
+                child = gedcom.individual_with_id(child)
+                if child is None:
+                    continue
+                birth.append(child.birthday)
 
         for item in birth:
             birthdays[item] += 1
@@ -310,21 +337,22 @@ def validate_multiple_births(gedcom):
 
 
 all_validators = [
-    validate_fewer_than_15_sibs, 
-    validate_dates_before_current, 
-    validate_marriage_after_fourteen, 
-    validate_corresponding_entries, 
-    validate_too_old_individual, 
-    validate_marriage_after_divorce, 
-    birth_before_death, 
-    birth_before_marriage,
-    validate_marriage_before_death,
-    validate_divorce_before_death,
-    validate_no_bigamy,
-    validate_male_last_last_name,
-    validate_sibling_spacing,
-    validate_parents_not_too_old,
-    validate_multiple_births
+    validate_dates_before_current, #US01
+    birth_before_marriage, #US02
+    birth_before_death, #US03
+    validate_marriage_after_divorce, #US04
+    validate_marriage_before_death, #US05
+    validate_divorce_before_death, #US06
+    validate_too_old_individual, #US07
+    validate_marriage_after_fourteen, #US10
+    validate_no_bigamy, #US11
+    validate_parents_not_too_old, #US12
+    validate_sibling_spacing, #US13
+    validate_multiple_births, #US14
+    validate_fewer_than_15_sibs, #US15
+    validate_male_last_last_name, #US16
+    validate_correct_gender, #US21
+    validate_corresponding_entries, #US26
 ]
 
 
