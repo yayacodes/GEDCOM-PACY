@@ -335,7 +335,17 @@ def validate_multiple_births(gedcom):
 
     return errors
 
+def list_deceased(gedcom):
+    "List all deceased individuals in a GEDCOM file"
 
+    deceased = []
+
+    for individual in gedcom.individuals:
+        if individual.death != None:
+            deceased.append(f'DECEASED:  {individual}')
+        
+    return deceased
+    
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -353,6 +363,7 @@ all_validators = [
     validate_male_last_last_name, #US16
     validate_correct_gender, #US21
     validate_corresponding_entries, #US26
+    list_deceased #US29
 ]
 
 
