@@ -1,36 +1,89 @@
 Individuals
-+-----+----------------+-----+------------+-----+-------+------------+-------+--------+
-|  ID |      Name      | Sex |  Birthday  | Age | Alive |   Death    | Child | Spouse |
-+-----+----------------+-----+------------+-----+-------+------------+-------+--------+
-| I01 | Morgan Freeman |  M  | 2050-01-01 |  50 | False | 2100-01-02 |  None |  None  |
-| I02 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
-| I03 | Morgan Freeman |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
-| I04 |  Angie Monte   |  F  | 1960-01-01 |  60 |  True |     NA     |  None |  None  |
-| I05 | Morgan Freeman |  M  | 1980-01-01 |  0  | False | 1979-01-02 |  None |  None  |
-| I05 | Morgan Freeman |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
-| I06 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
-| I06 |  Angie Monte   |  F  | 1882-01-01 | 138 |  True |     NA     |  None |  None  |
-| I07 | Morgan Freeman |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
-| I08 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
-| I09 | Morgan Freeman |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
-| I10 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
-| I11 | Morgan Freeman |  M  | 1800-01-01 | 151 | False | 1951-01-02 |  None |  None  |
-| I12 |  Angie Monte   |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
-+-----+----------------+-----+------------+-----+-------+------------+-------+--------+
++--------+------------------+-----+------------+-----+-------+------------+-------+--------+
+|   ID   |       Name       | Sex |  Birthday  | Age | Alive |   Death    | Child | Spouse |
++--------+------------------+-----+------------+-----+-------+------------+-------+--------+
+| 11-I01 |  Morgan Freeman  |  M  | 1970-10-10 |  49 |  True |     NA     |  None | 11-F02 |
+| 11-I02 |  Morgan Freeman  |  F  | 1970-10-10 |  49 |  True |     NA     |  None | 11-F01 |
+| 11-I03 |  Morgan Freeman  |  F  | 1970-10-10 |  49 |  True |     NA     |  None | 11-F02 |
+| 21-I02 |                  |  F  |     NA     |  -1 |  True |     NA     |  None |  None  |
+|  I01   |  Morgan Freeman  |  M  | 2050-01-01 |  50 | False | 2100-01-02 |  None |  None  |
+|  I02   |   Angie Monte    |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+|  I03   |  Morgan Freeman  |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
+|  I04   |   Angie Monte    |  F  | 1960-01-01 |  60 |  True |     NA     |  None |  None  |
+|  I05   |  Morgan Freeman  |  M  | 1980-01-01 |  0  | False | 1979-01-02 |  None |  None  |
+|  I05   |  Morgan Freeman  |  M  | 1980-01-01 |  40 |  True |     NA     |  None |  None  |
+|  I06   |   Angie Monte    |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+|  I06   |   Angie Monte    |  F  | 1882-01-01 | 138 |  True |     NA     |  None |  None  |
+|  I07   |  Morgan Freeman  |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
+|  I08   |   Angie Monte    |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+|  I09   |  Morgan Freeman  |  M  | 1980-01-01 |  20 | False | 2000-01-02 |  None |  None  |
+|  I10   |   Angie Monte    |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+|  I11   |  Morgan Freeman  |  M  | 1800-01-01 | 151 | False | 1951-01-02 |  None |  None  |
+|  I12   |   Angie Monte    |  F  | 1960-01-01 |  50 | False | 2010-01-02 |  None |  None  |
+|  I13   |  Morgan Freeman  |  M  | 1800-01-01 | 220 |  True |     NA     |  None |  None  |
+|  I14   |   David Chang    |  M  | 1800-01-01 | 220 |  True |     NA     |  None |  None  |
+|  I15   |   Sarah Monte    |  F  | 1800-01-01 | 220 |  True |     NA     |  None |  None  |
+|  I16   |  Morgan Freeman  |  M  | 2010-01-01 |  10 |  True |     NA     |  None |  None  |
+|  I16   |    John Cena     |  M  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
+|  I17   |  David Freeman   |  M  | 2010-05-01 |  9  |  True |     NA     |  None |  None  |
+|  I17   |    Shawn Cena    |  M  | 1915-01-01 | 105 |  True |     NA     |  None |  F07   |
+|  I18   |  Sarah Freeman   |  F  | 2010-10-01 |  9  |  True |     NA     |  None |  None  |
+|  I18   | Amanda Something |  F  | 1935-01-01 |  85 |  True |     NA     |  None |  F07   |
+|  I19   |    Dwane Cena    |  M  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
+|  I20   |    Kane Cena     |  M  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
+|  I21   | Raymisterio Cena |  M  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
+|  I22   |    Ronda Cena    |  F  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
+|  I23   |   Bigshow Cena   |  M  | 2000-01-01 |  20 |  True |     NA     |  F07  |  None  |
++--------+------------------+-----+------------+-----+-------+------------+-------+--------+
 Families
-+-----+------------+------------+------------+----------------+---------+-------------+----------+
-|  ID |  Married   |  Divorced  | Husband ID |  Husband Name  | Wife ID |  Wife Name  | Children |
-+-----+------------+------------+------------+----------------+---------+-------------+----------+
-| F01 | 2070-01-01 | 2001-01-01 |    I01     | Morgan Freeman |   I02   | Angie Monte |    []    |
-| F02 | 1979-01-01 |     NA     |    I03     | Morgan Freeman |   I04   | Angie Monte |    []    |
-| F03 | 2001-01-01 | 2000-01-01 |    I05     | Morgan Freeman |   I06   | Angie Monte |    []    |
-| F04 | 2001-01-01 |     NA     |    I07     | Morgan Freeman |   I08   | Angie Monte |    []    |
-| F05 |     NA     | 2001-01-01 |    I09     | Morgan Freeman |   I10   | Angie Monte |    []    |
-+-----+------------+------------+------------+----------------+---------+-------------+----------+
++--------+------------+------------+------------+----------------+---------+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   ID   |  Married   |  Divorced  | Husband ID |  Husband Name  | Wife ID |   Wife Name    |                                                                             Children                                                                             |
++--------+------------+------------+------------+----------------+---------+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 11-F01 | 2000-10-10 |     NA     |   11-I01   | Morgan Freeman |  11-I02 | Morgan Freeman |                                                                                []                                                                                |
+| 11-F02 | 2005-10-10 |     NA     |   11-I01   | Morgan Freeman |  11-I03 | Morgan Freeman |                                                                                []                                                                                |
+| 21-F02 |     NA     |     NA     |   21-I02   |                |   None  |   Not found    |                                                                                []                                                                                |
+|  F01   | 2070-01-01 | 2001-01-01 |    I01     | Morgan Freeman |   I02   |  Angie Monte   |                                                                                []                                                                                |
+|  F02   | 1979-01-01 |     NA     |    I03     | Morgan Freeman |   I04   |  Angie Monte   |                                                                                []                                                                                |
+|  F03   | 2001-01-01 | 2000-01-01 |    I05     | Morgan Freeman |   I06   |  Angie Monte   |                                                                                []                                                                                |
+|  F04   | 2001-01-01 |     NA     |    I07     | Morgan Freeman |   I08   |  Angie Monte   |                                                                                []                                                                                |
+|  F05   |     NA     | 2001-01-01 |    I09     | Morgan Freeman |   I10   |  Angie Monte   |                                                                                []                                                                                |
+|  F05   |     NA     |     NA     |    I13     | Morgan Freeman |   None  |   Not found    |                                                                          ['I14', 'I15']                                                                          |
+|  F06   |     NA     |     NA     |    None    |   Not found    |   None  |   Not found    |                                                                      ['I16', 'I17', 'I18']                                                                       |
+|  F07   | 2010-10-10 |     NA     |    I17     | David Freeman  |   I18   | Sarah Freeman  |                                                            ['I16', 'I19', 'I20', 'I21', 'I22', 'I23']                                                            |
+|  F08   |     NA     |     NA     |    None    |   Not found    |   None  |   Not found    | ['15-I01', '15-I02', '15-I03', '15-I04', '15-I05', '15-I06', '15-I07', '15-I08', '15-I09', '15-I10', '15-I11', '15-I12', '15-I13', '15-I14', '15-I15', '15-I16'] |
++--------+------------+------------+------------+----------------+---------+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+: Family(id='11-F01', married=datetime.datetime(2000, 10, 10, 0, 0), divorced=None, husband_id='11-I01', wife_id='11-I02', children=[]) Family(id='11-F02', married=datetime.datetime(2005, 10, 10, 0, 0), divorced=None, husband_id='11-I01', wife_id='11-I03', children=[])
 Error: US01: The Family F01's marriage date 2070-01-01 is after the current date
 Error: US01: The Individual I01's birthday 2050-01-01 is after the current date
 Error: US01: The Individual I01's deathdate 2100-01-02 is after the current date
+Error: US02: The individual Morgan Freeman (I03) has marriage before birth, marriage = 1979-01-01 00:00:00, birth = 1980-01-01 00:00:00
+Error: US03: The individual Morgan Freeman (I05) has death before birth, death = 1979-01-02 00:00:00, birth = 1980-01-01 00:00:00
+Error: US04: Family F01 has divorce date 2001-01-01 before marriage date 2070-01-01
+Error: US04: Family F03 has divorce date 2000-01-01 before marriage date 2001-01-01
+Error: US05: Family (F01) has the wife Angie Monte (I02) death date (01/02/10) before the marriage date (01/01/70)
+Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the marriage date (01/01/01)
+Error: US05: Family (F04) has the husband Morgan Freeman (I07) death date (01/02/00) before the marriage date (01/01/01)
+Error: US06: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the divorce date (01/01/00)
+Error: US06: Family (F05) has the husband Morgan Freeman (I09) death date (01/02/00) before the divorce date (01/01/01)
+Error: US07: The individual Morgan Freeman (I11) is too old, age = 151.
+Error: US07: The individual Morgan Freeman (I13) is too old, age = 220.
+Error: US07: The individual David Chang (I14) is too old, age = 220.
+Error: US07: The individual Sarah Monte (I15) is too old, age = 220.
 Error: US10: Spouse I03 in family F02 was married at less than 14 years old, age=40
+Error: US10: Spouse I18 in family F07 was married at less than 14 years old, age=9
+Error: US10: Spouse I17 in family F07 was married at less than 14 years old, age=9
+Error: US11: Individual 11-I01 married 11-I01 on 10-10-2005, which was during their marriage to 11-I01
+Error: US13: Child Morgan Freeman (I16) in family F06 has unrealistic birthday gap (120 days) to his sibling David Freeman (I17)
+Error: US13: Child David Freeman (I17) in family F06 has unrealistic birthday gap (153 days) to his sibling Sarah Freeman (I18)
+Error: US14: For family with id F08 there are more than 5 births at the same time
+Error: US15: Family F08 has more than 15 siblings
+Error: US16: Individual I14 last name (Chang) doesn't follow the family last name (Freeman)
+Error: US16: Individual I19 last name (Cena) doesn't follow the family last name (Freeman)
+Error: US16: Individual I20 last name (Cena) doesn't follow the family last name (Freeman)
+Error: US16: Individual I21 last name (Cena) doesn't follow the family last name (Freeman)
+Error: US16: Individual I23 last name (Cena) doesn't follow the family last name (Freeman)
+Error: US21: Husband 21-I02 in Family 21-F02 should be male
+Error: US26: The family 21-F02 contains spouse 21-I02, but that individual does not list this family as a spouse
 Error: US26: The family F01 contains spouse I02, but that individual does not list this family as a spouse
 Error: US26: The family F01 contains spouse I01, but that individual does not list this family as a spouse
 Error: US26: The family F02 contains spouse I04, but that individual does not list this family as a spouse
@@ -41,13 +94,28 @@ Error: US26: The family F04 contains spouse I08, but that individual does not li
 Error: US26: The family F04 contains spouse I07, but that individual does not list this family as a spouse
 Error: US26: The family F05 contains spouse I10, but that individual does not list this family as a spouse
 Error: US26: The family F05 contains spouse I09, but that individual does not list this family as a spouse
-Error: US07: The individual Morgan Freeman (I11) is too old, age = 151.
-Error: US04: Family F01 has divorce date 2001-01-01 before marriage date 2070-01-01
-Error: US04: Family F03 has divorce date 2000-01-01 before marriage date 2001-01-01
-Error: US03: The individual Morgan Freeman (I05) has death before birth, death = 1979-01-02 00:00:00, birth = 1980-01-01 00:00:00
-Error: US02: The individual Morgan Freeman (I03) has marriage before birth, marriage = 1979-01-01 00:00:00, birth = 1980-01-01 00:00:00
-Error: US05: Family (F01) has the wife Angie Monte (I02) death date (01/02/10) before the marriage date (01/01/70)
-Error: US05: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the marriage date (01/01/01)
-Error: US05: Family (F04) has the husband Morgan Freeman (I07) death date (01/02/00) before the marriage date (01/01/01)
-Error: US06: Family (F03) has the husband Morgan Freeman (I05) death date (01/02/79) before the divorce date (01/01/00)
-Error: US06: Family (F05) has the husband Morgan Freeman (I09) death date (01/02/00) before the divorce date (01/01/01)
+Error: US26: The family F05 contains spouse I13, but that individual does not list this family as a spouse
+Error: US26: The family F05 contains child I14, but that individual does not list this family as a child
+Error: US26: The family F05 contains child I15, but that individual does not list this family as a child
+Error: US26: The family F06 contains child I16, but that individual does not list this family as a child
+Error: US26: The family F06 contains child I17, but that individual does not list this family as a child
+Error: US26: The family F06 contains child I18, but that individual does not list this family as a child
+Error: US26: The family F07 contains spouse I18, but that individual does not list this family as a spouse
+Error: US26: The family F07 contains spouse I17, but that individual does not list this family as a spouse
+Error: US26: The family F07 contains child I16, but that individual does not list this family as a child
+Error: US26: The family F08 contains child 15-I01, but that individual has no record
+Error: US26: The family F08 contains child 15-I02, but that individual has no record
+Error: US26: The family F08 contains child 15-I03, but that individual has no record
+Error: US26: The family F08 contains child 15-I04, but that individual has no record
+Error: US26: The family F08 contains child 15-I05, but that individual has no record
+Error: US26: The family F08 contains child 15-I06, but that individual has no record
+Error: US26: The family F08 contains child 15-I07, but that individual has no record
+Error: US26: The family F08 contains child 15-I08, but that individual has no record
+Error: US26: The family F08 contains child 15-I09, but that individual has no record
+Error: US26: The family F08 contains child 15-I10, but that individual has no record
+Error: US26: The family F08 contains child 15-I11, but that individual has no record
+Error: US26: The family F08 contains child 15-I12, but that individual has no record
+Error: US26: The family F08 contains child 15-I13, but that individual has no record
+Error: US26: The family F08 contains child 15-I14, but that individual has no record
+Error: US26: The family F08 contains child 15-I15, but that individual has no record
+Error: US26: The family F08 contains child 15-I16, but that individual has no record
