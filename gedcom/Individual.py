@@ -22,6 +22,8 @@ class Individual:
 
     @property
     def age(self) -> int:
+        if self.birthday is None:
+            return -1
         if self.alive:
             return int((datetime.now() - self.birthday).days / 365)
         else:

@@ -264,6 +264,51 @@ def test_dates_before_current():
   errors = validation.validate_dates_before_current(gedcom)
   assert errors[0] == 'Error: US01: The Individual I01\'s deathdate 2025-10-10 is after the current date'
   assert len(errors) == 1
+
+def test_correct_gender():
+  # Husband is female or anything other than male
+  families = [ Family('F01', married=datetime(1999, 9, 9), husband_id='I01', wife_id='I02')]
+  individuals = [
+    Individual('I01', spouses=['F01'], sex='X'),
+    Individual('I02', spouses=['F01'], sex='F')
+  ]
+  gedcom = Gedcom(individuals = individuals, families = families)
+  errors = validation.validate_correct_gender(gedcom)
+  assert errors[0] == 'Error: US21: Husband I01 in Family F01 should be male'
+  assert len(errors) == 1
+
+  # Wife is male or anything other than female
+  families = [ Family('F01', married=datetime(1999, 9, 9), husband_id='I01', wife_id='I02')]
+  individuals = [
+    Individual('I01', spouses=['F01'], sex='M'),
+    Individual('I02', spouses=['F01'], sex='X')
+  ]
+  gedcom = Gedcom(individuals = individuals, families = families)
+  errors = validation.validate_correct_gender(gedcom)
+  assert errors[0] == 'Error: US21: Wife I02 in Family F01 should be female'
+  assert len(errors) == 1
+
+  # Both Husband and wife are not male and female respectively
+  families = [ Family('F01', married=datetime(1999, 9, 9), husband_id='I01', wife_id='I02')]
+  individuals = [
+    Individual('I01', spouses=['F01'], sex='X'),
+    Individual('I02', spouses=['F01'], sex='X')
+  ]
+  gedcom = Gedcom(individuals = individuals, families = families)
+  errors = validation.validate_correct_gender(gedcom)
+  assert errors[0] == 'Error: US21: Husband I01 in Family F01 should be male'
+  assert errors[1] == 'Error: US21: Wife I02 in Family F01 should be female'
+  assert len(errors) == 2
+
+  # Both Husband and Wife are correct gender
+  families = [ Family('F01', married=datetime(1999, 9, 9), husband_id='I01', wife_id='I02')]
+  individuals = [
+    Individual('I01', spouses=['F01'], sex='M'),
+    Individual('I02', spouses=['F01'], sex='F')
+  ]
+  gedcom = Gedcom(individuals = individuals, families = families)
+  errors = validation.validate_correct_gender(gedcom)
+  assert len(errors) == 0
   
 def test_fewer_than_15_sibs():
   # Family has more than 15 siblings
@@ -409,3 +454,19 @@ def test_validate_sibling_spacing_unrealistic():
     assert errors[1] == "Error: US13: Child David Freeman (I02) in family F01 has unrealistic birthday gap (153 days) to his sibling Sarah Freeman (I03)"
 
 
+def test_validate_parents_not_too_old():
+  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  errors = validate_parents_not_too_old(gedcom)
+  assert len(errors) == 6
+  assert errors[0] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child John Cena'
+  assert errors[1] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Dwane Cena'
+  assert errors[2] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Kane Cena'
+  assert errors[3] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Raymisterio Cena'
+  assert errors[4] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Ronda Cena'
+  assert errors[5] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Bigshow Cena'
+
+def test_validate_multiple_births():
+  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  errors = validate_multiple_births(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US14: For family with id @F1@ there are more than 5 births at the same time'
