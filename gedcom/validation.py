@@ -336,6 +336,22 @@ def validate_multiple_births(gedcom):
     return errors
 
 
+def validate_unique_families_by_spouses(gedcom):
+    """
+        US24: No more than one family with the same spouses by name and the same marriage date should appear in a GEDCOM file
+    """
+    errors = []
+    for (family1, family2) in combinations(gedcom.families, 2):
+        husband1, wife1 = gedcom.individual_with_id(family1.husband_id), gedcom.individual_with_id(family1.wife_id)
+        husband2, wife2 = gedcom.individual_with_id(family2.husband_id), gedcom.individual_with_id(family2.wife_id)
+        if not (husband1 and wife1 and husband2 and wife2):
+            continue
+
+        if family1.married == family2.married and husband1.name == husband2.name and wife1.name == wife2.name:
+            errors.append(f'Error: US24: Families with id {family1.id} and {family2.id} have the same spouses '
+                          f'names ({husband1.name}, {wife1.name}) and marriage date ({family1.married})')
+    return errors
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -352,7 +368,8 @@ all_validators = [
     validate_fewer_than_15_sibs, #US15
     validate_male_last_last_name, #US16
     validate_correct_gender, #US21
-    validate_corresponding_entries, #US26
+    validate_corresponding_entries, #US26,
+    validate_unique_families_by_spouses,  # US24
 ]
 
 
