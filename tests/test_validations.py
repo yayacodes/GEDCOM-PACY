@@ -470,3 +470,26 @@ def test_validate_multiple_births():
   errors = validate_multiple_births(gedcom)
   assert len(errors) == 1
   assert errors[0] == 'Error: US14: For family with id @F1@ there are more than 5 births at the same time'
+
+
+def test_validate_unique_first_name_in_family_error():
+    families = [Family('F01', married=datetime(2000, 10, 10), children=['I01', 'I02'])]
+    individuals = [
+        Individual('I01', first_name='Morgan'),
+        Individual('I02', first_name='Morgan'),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_unique_first_name_in_family(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == "Error: US25: Family with id F01 has two children with the same first name 'Morgan'"
+
+
+def test_validate_unique_first_name_in_family_valid():
+    families = [Family('F01', married=datetime(2000, 10, 10), children=['I01', 'I02'])]
+    individuals = [
+        Individual('I01', first_name='Morgan'),
+        Individual('I02', first_name='Gordon'),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_unique_first_name_in_family(gedcom)
+    assert len(errors) == 0

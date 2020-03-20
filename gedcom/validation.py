@@ -336,6 +336,21 @@ def validate_multiple_births(gedcom):
     return errors
 
 
+def validate_unique_first_name_in_family(gedcom):
+    """
+        US25: No more than one child with the same name and birth date should appear in a family
+    """
+    errors = []
+    for family in gedcom.families:
+        for (id1, id2) in combinations(family.children, 2):
+            child1, child2 = gedcom.individual_with_id(id1), gedcom.individual_with_id(id2)
+            if not (child1 and child2):
+                continue
+            if child1.first_name == child2.first_name:
+                errors.append(f'Error: US25: Family with id {family.id} has two children with the same first name \'{child1.first_name}\'')
+
+    return errors
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -353,6 +368,7 @@ all_validators = [
     validate_male_last_last_name, #US16
     validate_correct_gender, #US21
     validate_corresponding_entries, #US26
+    validate_unique_first_name_in_family,  # US25
 ]
 
 
