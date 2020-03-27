@@ -519,3 +519,33 @@ def test_validate_unique_families_by_spouses_error_diff_marriage_date_same_names
     gedcom = Gedcom(individuals=individuals, families=families)
     errors = validation.validate_unique_families_by_spouses(gedcom)
     assert len(errors) == 0
+
+def test_validate_no_marriage_to_children():
+  """
+  Testing US17
+  """
+  # Husband is married to child
+  families = [ 
+    Family('F01', wife_id='I02', husband_id='I01', children=['I03']),
+    Family('F02', wife_id='I01', husband_id='I03')
+  ]
+  gedcom = Gedcom(individuals=[], families=families)
+  errors = validation.validate_no_marriage_to_children(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US17: Individiual I01 is married to I03, a child of theirs in Family F01.' 
+
+  # Wife is married to child
+  families = [ 
+    Family('F01', wife_id='I01', husband_id='I02', children=['I03']),
+    Family('F02', wife_id='I01', husband_id='I03')
+  ]
+  gedcom = Gedcom(individuals=[], families=families)
+  errors = validation.validate_no_marriage_to_children(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US17: Individiual I01 is married to I03, a child of theirs in Family F01.' 
+
+  # No one is married to child
+  families = [ Family('F01', wife_id='I01', husband_id='I02', children=['I03'])]
+  gedcom = Gedcom(individuals=[], families=families)
+  errors = validation.validate_no_marriage_to_children(gedcom)
+  assert len(errors) == 0
