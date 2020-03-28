@@ -367,6 +367,35 @@ def validate_unique_families_by_spouses(gedcom):
                           f'names ({husband1.name}, {wife1.name}) and marriage date ({family1.married})')
     return errors
 
+def validate_no_marriage_to_children(gedcom):
+    """
+        US17: No marriage to children
+    """
+    errors = []
+
+    def get_families_with_spouse(spouse_id):
+        result = []
+        for family in gedcom.families: 
+            if family.husband_id == spouse_id:
+                result.append(family)
+            elif family.wife_id == spouse_id:
+                result.append(family)
+        return result
+
+    for family in gedcom.families:
+        # Check whether child is married to their parent
+        if family.children:
+            family_spouses = [family.husband_id, family.wife_id]
+            
+            for child_id in family.children:
+                childs_families = get_families_with_spouse(child_id)
+                for childs_family in childs_families:
+                    if childs_family.husband_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.husband_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+                    if childs_family.wife_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.wife_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+    return errors
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -382,6 +411,7 @@ all_validators = [
     validate_multiple_births, #US14
     validate_fewer_than_15_sibs, #US15
     validate_male_last_last_name, #US16
+    validate_no_marriage_to_children, #US17
     validate_correct_gender, #US21
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
