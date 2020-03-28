@@ -348,6 +348,7 @@ def validate_unique_first_name_in_family(gedcom):
                 continue
             if child1.first_name == child2.first_name:
                 errors.append(f'Error: US25: Family with id {family.id} has two children with the same first name \'{child1.first_name}\'')
+    return errors
 
 
 def validate_unique_families_by_spouses(gedcom):
@@ -382,9 +383,8 @@ all_validators = [
     validate_fewer_than_15_sibs, #US15
     validate_male_last_last_name, #US16
     validate_correct_gender, #US21
-    validate_corresponding_entries, #US26
     validate_unique_first_name_in_family,  # US25
-
+    validate_corresponding_entries, #US26
 ]
 
 
