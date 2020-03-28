@@ -542,6 +542,27 @@ def test_validate_unique_families_by_spouses_error_diff_marriage_date_same_names
     errors = validation.validate_unique_families_by_spouses(gedcom)
     assert len(errors) == 0
 
+def test_validate_no_marriage_to_siblings():
+  """
+  Testing US18: No marriage to siblings
+  """
+  # Husband is married to a sibling
+  families = [ 
+    Family('F01', children=['I01', 'I02']),
+    Family('F02', wife_id='I01', husband_id='I02')
+  ]
+  gedcom = Gedcom(individuals=[], families=families)
+  errors = validation.validate_no_marriage_to_siblings(gedcom)
+  assert len(errors) == 2
+  assert errors[0] == 'Error: US18: Individiual I02 is married to I01, a sibling of theirs in Family F01.' 
+  assert errors[1] == 'Error: US18: Individiual I01 is married to I02, a sibling of theirs in Family F01.' 
+
+  # No one is married to child
+  families = [ Family('F01', children=['I01', 'I02'])]
+  gedcom = Gedcom(individuals=[], families=families)
+  errors = validation.validate_no_marriage_to_siblings(gedcom)
+  assert len(errors) == 0
+  
 def test_validate_no_marriage_to_children():
   """
   Testing US17
