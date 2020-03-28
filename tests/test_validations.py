@@ -492,4 +492,52 @@ def test_validate_unique_first_name_in_family_valid():
     ]
     gedcom = Gedcom(individuals=individuals, families=families)
     errors = validation.validate_unique_first_name_in_family(gedcom)
+
+
+def test_validate_unique_families_by_spouses_error():
+    families = [
+        Family('F01', married=datetime(2000, 10, 10), wife_id='I01', husband_id='I02'),
+        Family('F02', married=datetime(2000, 10, 10), wife_id='I03', husband_id='I04')
+    ]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', sex='M'),
+        Individual('I02', name='Sarah Freeman', sex='F'),
+        Individual('I03', name='Morgan Freeman', sex='M'),
+        Individual('I04', name='Sarah Freeman', sex='F'),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_unique_families_by_spouses(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == "Error: US24: Families with id F01 and F02 have the same spouses names (Sarah Freeman, Morgan Freeman) and marriage date (2000-10-10 00:00:00)"
+
+
+def test_validate_unique_families_by_spouses_error_same_marriage_date_diff_names():
+    families = [
+        Family('F01', married=datetime(2000, 10, 10), wife_id='I01', husband_id='I02'),
+        Family('F02', married=datetime(2000, 10, 10), wife_id='I03', husband_id='I04')
+    ]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', sex='M'),
+        Individual('I02', name='Sarah Freeman', sex='F'),
+        Individual('I03', name='Morgan Freeman', sex='M'),
+        Individual('I04', name='Sarah Gordon', sex='F'),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_unique_families_by_spouses(gedcom)
+    assert len(errors) == 0
+
+
+def test_validate_unique_families_by_spouses_error_diff_marriage_date_same_names():
+    families = [
+        Family('F01', married=datetime(2000, 10, 10), wife_id='I01', husband_id='I02'),
+        Family('F02', married=datetime(2000, 10, 11), wife_id='I03', husband_id='I04')
+    ]
+    individuals = [
+        Individual('I01', name='Morgan Freeman', sex='M'),
+        Individual('I02', name='Sarah Freeman', sex='F'),
+        Individual('I03', name='Morgan Freeman', sex='M'),
+        Individual('I04', name='Sarah Freeman', sex='F'),
+    ]
+    gedcom = Gedcom(individuals=individuals, families=families)
+    errors = validation.validate_unique_families_by_spouses(gedcom)
     assert len(errors) == 0
