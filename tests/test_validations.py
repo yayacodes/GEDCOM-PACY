@@ -604,5 +604,19 @@ def test_list_deceased():
   errors = validation.validate_list_deceased(gedcom)
   assert len(errors) == 1
   assert errors[0] == 'Deceased: US29: (I01) Morgan Freeman [DeathDate: 2010-10-10]'
-  
 
+def test_list_living_married():
+  """
+  Testing US30: List All Living Married
+  """
+  families = [ Family('F01', married=datetime(2000, 9, 1), husband_id='I01', wife_id='I02')]
+  individuals = [
+    Individual('I01', name = "John Smith", birthday = datetime(1965, 10, 10), spouses=['F01']),
+    Individual('I02', name = "Abby Smith", birthday = datetime(1968, 10, 10), spouses=['F01'])
+  ]
+  gedcom = Gedcom(individuals = individuals, families = families)
+  errors = validation.validate_list_living_married(gedcom)
+  assert len(errors) == 2
+  assert errors[0] == 'Living Married: US30: (I01) John Smith'
+  assert errors[1] == 'Living Married: US30: (I02) Abby Smith'
+  
