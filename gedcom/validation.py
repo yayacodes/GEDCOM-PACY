@@ -205,6 +205,22 @@ def validate_no_bigamy(gedcom):
                         errors.append(f'Error: US11: Individual {spouse.id} married {family2_spouse.id} on {format_date(family2.married)}, which was during their marriage to {family1_spouse.id}')
     return errors
 
+def validate_correct_gender(gedcom):
+    """
+        Husband in family should be male and wife in family should be female
+    """
+    result = []
+    for family in gedcom.families:
+        if family.husband_id != None:
+            husband = gedcom.individual_with_id(family.husband_id)
+            if husband is not None and husband.sex != "M":
+                result.append(f'Error: US21: Husband {husband.id} in Family {family.id} should be male')
+        if family.wife_id != None:
+            wife = gedcom.individual_with_id(family.wife_id)
+            if wife is not None and wife.sex != "F":
+                result.append(f'Error: US21: Wife {wife.id} in Family {family.id} should be female')
+    return result
+
 
 def validate_male_last_last_name(gedcom):
     """
@@ -215,12 +231,17 @@ def validate_male_last_last_name(gedcom):
         if len(family.children) == 0:
             continue  # Nothing to check here
         husband = gedcom.individual_with_id(family.husband_id)
+        family_lastname = None
         if husband is not None:
             family_lastname = husband.last_name
-        else:
-            family_lastname = gedcom.individual_with_id(family.children[0]).last_name  # Family name is the name of first child
         for child_id in family.children:
             child = gedcom.individual_with_id(child_id)
+            if child is None or child.last_name is None:
+                continue
+            
+            if family_lastname is None:
+                family_lastname = child.last_name
+
             if child.sex == 'M' and child.last_name != family_lastname:
                 errors.append(f"Error: US16: Individual {child.id} last name ({child.last_name}) doesn't follow the family last name ({family_lastname})")
 
@@ -258,6 +279,9 @@ def validate_parents_not_too_old(gedcom):
         if child_list != None:
             for child in child_list:
                 indi = gedcom.individual_with_id(child)
+                if indi is None:
+                    continue 
+                
                 childs_age = indi.age
             
                 if husband == None and wife == None:
@@ -297,7 +321,10 @@ def validate_multiple_births(gedcom):
             continue
         else:
             for child in child_list:
-                birth.append(gedcom.individual_with_id(child).birthday)
+                child = gedcom.individual_with_id(child)
+                if child is None:
+                    continue
+                birth.append(child.birthday)
 
         for item in birth:
             birthdays[item] += 1
@@ -309,22 +336,118 @@ def validate_multiple_births(gedcom):
     return errors
 
 
+def validate_unique_first_name_in_family(gedcom):
+    """
+        US25: No more than one child with the same name and birth date should appear in a family
+    """
+    errors = []
+    for family in gedcom.families:
+        for (id1, id2) in combinations(family.children, 2):
+            child1, child2 = gedcom.individual_with_id(id1), gedcom.individual_with_id(id2)
+            if not (child1 and child2):
+                continue
+            if child1.first_name == child2.first_name:
+                errors.append(f'Error: US25: Family with id {family.id} has two children with the same first name \'{child1.first_name}\'')
+    return errors
+
+
+def validate_unique_families_by_spouses(gedcom):
+    """
+        US24: No more than one family with the same spouses by name and the same marriage date should appear in a GEDCOM file
+    """
+    errors = []
+    for (family1, family2) in combinations(gedcom.families, 2):
+        husband1, wife1 = gedcom.individual_with_id(family1.husband_id), gedcom.individual_with_id(family1.wife_id)
+        husband2, wife2 = gedcom.individual_with_id(family2.husband_id), gedcom.individual_with_id(family2.wife_id)
+        if not (husband1 and wife1 and husband2 and wife2):
+            continue
+
+        if family1.married == family2.married and husband1.name == husband2.name and wife1.name == wife2.name:
+            errors.append(f'Error: US24: Families with id {family1.id} and {family2.id} have the same spouses '
+                          f'names ({husband1.name}, {wife1.name}) and marriage date ({family1.married})')
+    return errors
+
+def validate_no_marriage_to_children(gedcom):
+    """
+        US17: No marriage to children
+    """
+    errors = []
+
+    def get_families_with_spouse(spouse_id):
+        result = []
+        for family in gedcom.families: 
+            if family.husband_id == spouse_id:
+                result.append(family)
+            elif family.wife_id == spouse_id:
+                result.append(family)
+        return result
+
+    for family in gedcom.families:
+        # Check whether child is married to their parent
+        if family.children:
+            family_spouses = [family.husband_id, family.wife_id]
+            
+            for child_id in family.children:
+                childs_families = get_families_with_spouse(child_id)
+                for childs_family in childs_families:
+                    if childs_family.husband_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.husband_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+                    if childs_family.wife_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.wife_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+    return errors
+
+def validate_no_marriage_to_siblings(gedcom):
+    """
+        US18: No marriage to siblings
+    """
+    errors = []
+
+    def get_families_with_spouse(spouse_id):
+        result = []
+        for family in gedcom.families: 
+            if family.husband_id == spouse_id:
+                result.append(family)
+            elif family.wife_id == spouse_id:
+                result.append(family)
+        return result
+
+    for family in gedcom.families:
+        # Check whether child is married to their parent
+        if not family.children or len(family.children) == 0:
+            pass
+
+        for child_id in family.children:
+            siblings = list(filter(lambda x: x is not child_id, family.children))
+
+            # Check this child's fmailies to see if their spouses are siblings
+            childs_families = get_families_with_spouse(child_id)
+            for childs_family in childs_families:
+                if childs_family.husband_id in siblings:
+                    errors.append(f'Error: US18: Individiual {childs_family.husband_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
+                if childs_family.wife_id in siblings:
+                    errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
+    return errors
+    
 all_validators = [
-    validate_fewer_than_15_sibs, 
-    validate_dates_before_current, 
-    validate_marriage_after_fourteen, 
-    validate_corresponding_entries, 
-    validate_too_old_individual, 
-    validate_marriage_after_divorce, 
-    birth_before_death, 
-    birth_before_marriage,
-    validate_marriage_before_death,
-    validate_divorce_before_death,
-    validate_no_bigamy,
-    validate_male_last_last_name,
-    validate_sibling_spacing,
-    validate_parents_not_too_old,
-    validate_multiple_births
+    validate_dates_before_current, #US01
+    birth_before_marriage, #US02
+    birth_before_death, #US03
+    validate_marriage_after_divorce, #US04
+    validate_marriage_before_death, #US05
+    validate_divorce_before_death, #US06
+    validate_too_old_individual, #US07
+    validate_marriage_after_fourteen, #US10
+    validate_no_bigamy, #US11
+    validate_parents_not_too_old, #US12
+    validate_sibling_spacing, #US13
+    validate_multiple_births, #US14
+    validate_fewer_than_15_sibs, #US15
+    validate_male_last_last_name, #US16
+    validate_no_marriage_to_children, #US17
+    validate_no_marriage_to_siblings, #US18
+    validate_correct_gender, #US21
+    validate_unique_first_name_in_family,  # US25
+    validate_corresponding_entries, #US26
 ]
 
 
