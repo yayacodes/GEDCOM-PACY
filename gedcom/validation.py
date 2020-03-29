@@ -336,15 +336,17 @@ def validate_multiple_births(gedcom):
     return errors
 
 def list_deceased(gedcom):
-    "List all deceased individuals in a GEDCOM file"
+    """
+        US29: List all deceased individuals in a GEDCOM file
+    """
 
     deceased = []
 
     for individual in gedcom.individuals:
-        if individual.death != None:
-            deceased.append(f'DECEASED:  {individual}')
-        
+        if individual.alive is False:
+            deceased.append(f'Deceased: US29: ({individual.id}) {individual.name} [DeathDate: {individual.death.date()}]')
     return deceased
+
 def validate_unique_first_name_in_family(gedcom):
     """
         US25: No more than one child with the same name and birth date should appear in a family
