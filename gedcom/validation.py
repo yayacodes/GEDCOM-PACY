@@ -335,7 +335,7 @@ def validate_multiple_births(gedcom):
 
     return errors
 
-def list_deceased(gedcom):
+def validate_list_deceased(gedcom):
     """
         US29: List all deceased individuals in a GEDCOM file
     """

@@ -601,7 +601,7 @@ def test_list_deceased():
     Individual('I01', name = 'Morgan Freeman', birthday = datetime(1940, 10, 10), death = datetime(2010, 10, 10))
   ]
   gedcom = Gedcom(individuals = individuals)
-  errors = validation.list_deceased(gedcom)
+  errors = validation.validate_list_deceased(gedcom)
   assert len(errors) == 1
   assert errors[0] == 'Deceased: US29: (I01) Morgan Freeman [DeathDate: 2010-10-10]'
   
