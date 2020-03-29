@@ -438,6 +438,23 @@ def validate_no_marriage_to_siblings(gedcom):
                 if childs_family.wife_id in siblings:
                     errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
     return errors
+
+
+def validate_list_living_married(gedcom):
+    """
+        US30: List all living married people in a GEDCOM file
+    """
+    living_married = []
+
+    for family in gedcom.families:
+        if family.divorced == None:
+            husband = gedcom.individual_with_id(family.husband_id)
+            wife = gedcom.individual_with_id(family.wife_id)
+        if husband != None and husband.alive:
+            living_married.append(f'Living Married: US30: ({husband.id}) {husband.name}')
+        if wife != None and wife.alive:
+            living_married.append(f'Living Married: US30: ({wife.id}) {wife.name}')
+    return living_married
     
 all_validators = [
     validate_dates_before_current, #US01
@@ -459,7 +476,8 @@ all_validators = [
     validate_correct_gender, #US21
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
-    validate_list_deceased #US29
+    validate_list_deceased, #US29
+    validate_list_living_married #US30
 ]
 
 
