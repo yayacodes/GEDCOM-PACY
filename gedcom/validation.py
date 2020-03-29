@@ -335,6 +335,17 @@ def validate_multiple_births(gedcom):
 
     return errors
 
+def validate_list_deceased(gedcom):
+    """
+        US29: List all deceased individuals in a GEDCOM file
+    """
+
+    deceased = []
+
+    for individual in gedcom.individuals:
+        if individual.alive is False:
+            deceased.append(f'Deceased: US29: ({individual.id}) {individual.name} [DeathDate: {individual.death.date()}]')
+    return deceased
 
 def validate_unique_first_name_in_family(gedcom):
     """
@@ -448,6 +459,7 @@ all_validators = [
     validate_correct_gender, #US21
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
+    validate_list_deceased #US29
 ]
 
 

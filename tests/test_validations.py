@@ -592,3 +592,17 @@ def test_validate_no_marriage_to_children():
   gedcom = Gedcom(individuals=[], families=families)
   errors = validation.validate_no_marriage_to_children(gedcom)
   assert len(errors) == 0
+
+def test_list_deceased():
+  """
+  Testing US29: List All Deceased 
+  """
+  individuals = [
+    Individual('I01', name = 'Morgan Freeman', birthday = datetime(1940, 10, 10), death = datetime(2010, 10, 10))
+  ]
+  gedcom = Gedcom(individuals = individuals)
+  errors = validation.validate_list_deceased(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Deceased: US29: (I01) Morgan Freeman [DeathDate: 2010-10-10]'
+  
+
