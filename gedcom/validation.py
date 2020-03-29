@@ -459,7 +459,7 @@ all_validators = [
     validate_correct_gender, #US21
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
-    list_deceased #US29
+    validate_list_deceased #US29
 ]
 
 
