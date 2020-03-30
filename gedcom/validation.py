@@ -476,59 +476,17 @@ def validate_first_cousins_should_not_marry(gedcom):
                 wifes_fathers_fam = find_family_with_child(wifes_father, gedcom)
                 wifes_mothers_fam = find_family_with_child(wifes_mother, gedcom)
 
-                if husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam == None:
-                    if (husbands_fathers_fam.id == wifes_fathers_fam.id):
+                if husbands_fathers_fam:
+                    if wifes_fathers_fam:
                         errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam != None:
-                    if (husbands_fathers_fam.id == wifes_mothers_fam.id):
-                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam != None:
-                    if (husbands_fathers_fam.id == wifes_fathers_fam.id) or (husbands_fathers_fam.id == wifes_mothers_fam.id):
-                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam != None:
-                    if (husbands_mothers_fam.id == wifes_mothers_fam.id):
-                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam == None:
-                    if (husbands_mothers_fam.id == wifes_fathers_fam.id):
+                    if wifes_mothers_fam:
                         errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
 
-                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam != None:
-                    if (husbands_mothers_fam.id == wifes_fathers_fam.id) or (husbands_mothers_fam.id == wifes_mothers_fam.id):
+                if husbands_mothers_fam:
+                    if wifes_fathers_fam:
                         errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam == None:
-                    continue
-            
-                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam == None:
-                    continue
-
-                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam == None:
-                    continue
-
-                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam != None:
-                    continue
-
-                elif husbands_fathers_fam != None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam != None:
-                    if (husbands_fathers_fam.id == wifes_fathers_fam.id) or (husbands_fathers_fam.id == wifes_mothers_fam.id) or (husbands_mothers_fam.id == wifes_fathers_fam.id) or (husbands_mothers_fam.id == wifes_mothers_fam.id):
+                    if wifes_mothers_fam:
                         errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-                
-                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam != None:
-                    continue
-
-                elif husbands_fathers_fam != None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam == None:
-                    continue
-                
-                else:
-                    continue
-
-
-                if (husbands_fathers_fam.id == wifes_fathers_fam.id) or (husbands_fathers_fam.id == wifes_mothers_fam.id) or (husbands_mothers_fam.id == wifes_fathers_fam.id) or (husbands_mothers_fam.id == wifes_mothers_fam.id):
-                    errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
-      
     return errors
 
 

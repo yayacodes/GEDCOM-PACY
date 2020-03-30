@@ -599,7 +599,8 @@ def test_validate_first_cousins_should_not_marry():
   """
   gedcom = parse_gedcom('../res/Pete_sprint3_US19_test.ged')
   errors = validation.validate_first_cousins_should_not_marry(gedcom)
-  
+  print(errors)
+
   assert len(errors) == 1
   assert errors[0] == 'Error: US19: The family with id @F4@ has first cousins as a married couple husband: @I7@, wife: @I8@'
 
