@@ -592,3 +592,24 @@ def test_validate_no_marriage_to_children():
   gedcom = Gedcom(individuals=[], families=families)
   errors = validation.validate_no_marriage_to_children(gedcom)
   assert len(errors) == 0
+
+def test_validate_first_cousins_should_not_marry():
+  """
+    testing US19
+  """
+  gedcom = parse_gedcom('../res/Pete_sprint3_US19_test.ged')
+  errors = validation.validate_first_cousins_should_not_marry(gedcom)
+  
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US19: The family with id @F4@ has first cousins as a married couple husband: @I7@, wife: @I8@'
+
+def test_validate_aunts_and_uncles():
+  """
+    testing US20
+  """
+  gedcom = parse_gedcom('../res/Pete_sprint3_US20_test.ged')
+  errors = validation.validate_aunts_and_uncles(gedcom)
+
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US20: family with id @F1@ has uncles and aunts married to niece and nephews husband: @I6@, wife: @I1@'
+
