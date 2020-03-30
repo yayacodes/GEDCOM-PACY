@@ -17,6 +17,7 @@
   "tests/test_validations.py::test_marriage_after_fourteen",
   "tests/test_validations.py::test_marriage_after_divorce",
   "tests/test_validations.py::test_dates_before_current",
+  "tests/test_validations.py::test_correct_gender",
   "tests/test_validations.py::test_fewer_than_15_sibs",
   "tests/test_validations.py::test_validate_no_bigamy",
   "tests/test_validations.py::test_validate_male_last_names_all_last_names_valid",
@@ -26,5 +27,14 @@
   "tests/test_validations.py::test_validate_sibling_spacing_less_than_2_days",
   "tests/test_validations.py::test_validate_sibling_spacing_unrealistic",
   "tests/test_validations.py::test_validate_parents_not_too_old",
-  "tests/test_validations.py::test_validate_multiple_births"
+  "tests/test_validations.py::test_validate_multiple_births",
+  "tests/test_validations.py::test_validate_unique_first_name_in_family_error",
+  "tests/test_validations.py::test_validate_unique_first_name_in_family_valid",
+  "tests/test_validations.py::test_validate_unique_families_by_spouses_error",
+  "tests/test_validations.py::test_validate_unique_families_by_spouses_error_same_marriage_date_diff_names",
+  "tests/test_validations.py::test_validate_unique_families_by_spouses_error_diff_marriage_date_same_names",
+  "tests/test_validations.py::test_validate_no_marriage_to_siblings",
+  "tests/test_validations.py::test_validate_no_marriage_to_children",
+  "tests/test_validations.py::test_validate_first_cousins_should_not_marry",
+  "tests/test_validations.py::test_validate_aunts_and_uncles"
 ]

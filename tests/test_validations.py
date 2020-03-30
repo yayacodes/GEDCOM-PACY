@@ -593,6 +593,28 @@ def test_validate_no_marriage_to_children():
   errors = validation.validate_no_marriage_to_children(gedcom)
   assert len(errors) == 0
 
+def test_validate_first_cousins_should_not_marry():
+  """
+    testing US19
+  """
+  gedcom = parse_gedcom('../res/Pete_sprint3_US19_test.ged')
+  errors = validation.validate_first_cousins_should_not_marry(gedcom)
+  print(errors)
+
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US19: The family with id @F4@ has first cousins as a married couple husband: @I7@, wife: @I8@'
+
+def test_validate_aunts_and_uncles():
+  """
+    testing US20
+  """
+  gedcom = parse_gedcom('../res/Pete_sprint3_US20_test.ged')
+  errors = validation.validate_aunts_and_uncles(gedcom)
+
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US20: family with id @F1@ has uncles and aunts married to niece and nephews husband: @I6@, wife: @I1@'
+
+
 def test_list_deceased():
   """
   Testing US29: List All Deceased 
@@ -619,4 +641,3 @@ def test_list_living_married():
   assert len(errors) == 2
   assert errors[0] == 'Living Married: US30: (I01) John Smith'
   assert errors[1] == 'Living Married: US30: (I02) Abby Smith'
-  

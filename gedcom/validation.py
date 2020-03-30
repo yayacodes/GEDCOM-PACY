@@ -439,6 +439,265 @@ def validate_no_marriage_to_siblings(gedcom):
                     errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
     return errors
 
+  
+def validate_unique_first_name_in_family(gedcom):
+    """
+        US25: No more than one child with the same name and birth date should appear in a family
+    """
+    errors = []
+    for family in gedcom.families:
+        for (id1, id2) in combinations(family.children, 2):
+            child1, child2 = gedcom.individual_with_id(id1), gedcom.individual_with_id(id2)
+            if not (child1 and child2):
+                continue
+            if child1.first_name == child2.first_name:
+                errors.append(f'Error: US25: Family with id {family.id} has two children with the same first name \'{child1.first_name}\'')
+    return errors
+
+
+def validate_unique_families_by_spouses(gedcom):
+    """
+        US24: No more than one family with the same spouses by name and the same marriage date should appear in a GEDCOM file
+    """
+    errors = []
+    for (family1, family2) in combinations(gedcom.families, 2):
+        husband1, wife1 = gedcom.individual_with_id(family1.husband_id), gedcom.individual_with_id(family1.wife_id)
+        husband2, wife2 = gedcom.individual_with_id(family2.husband_id), gedcom.individual_with_id(family2.wife_id)
+        if not (husband1 and wife1 and husband2 and wife2):
+            continue
+
+        if family1.married == family2.married and husband1.name == husband2.name and wife1.name == wife2.name:
+            errors.append(f'Error: US24: Families with id {family1.id} and {family2.id} have the same spouses '
+                          f'names ({husband1.name}, {wife1.name}) and marriage date ({family1.married})')
+    return errors
+
+def validate_no_marriage_to_children(gedcom):
+    """
+        US17: No marriage to children
+    """
+    errors = []
+
+    def get_families_with_spouse(spouse_id):
+        result = []
+        for family in gedcom.families: 
+            if family.husband_id == spouse_id:
+                result.append(family)
+            elif family.wife_id == spouse_id:
+                result.append(family)
+        return result
+
+    for family in gedcom.families:
+        # Check whether child is married to their parent
+        if family.children:
+            family_spouses = [family.husband_id, family.wife_id]
+            
+            for child_id in family.children:
+                childs_families = get_families_with_spouse(child_id)
+                for childs_family in childs_families:
+                    if childs_family.husband_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.husband_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+                    if childs_family.wife_id in family_spouses:
+                        errors.append(f'Error: US17: Individiual {childs_family.wife_id} is married to {child_id}, a child of theirs in Family {family.id}.')
+    return errors
+
+def validate_no_marriage_to_siblings(gedcom):
+    """
+        US18: No marriage to siblings
+    """
+    errors = []
+
+    def get_families_with_spouse(spouse_id):
+        result = []
+        for family in gedcom.families: 
+            if family.husband_id == spouse_id:
+                result.append(family)
+            elif family.wife_id == spouse_id:
+                result.append(family)
+        return result
+
+    for family in gedcom.families:
+        # Check whether child is married to their parent
+        if not family.children or len(family.children) == 0:
+            pass
+
+        for child_id in family.children:
+            siblings = list(filter(lambda x: x is not child_id, family.children))
+
+            # Check this child's fmailies to see if their spouses are siblings
+            childs_families = get_families_with_spouse(child_id)
+            for childs_family in childs_families:
+                if childs_family.husband_id in siblings:
+                    errors.append(f'Error: US18: Individiual {childs_family.husband_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
+                if childs_family.wife_id in siblings:
+                    errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
+    return errors
+
+
+def validate_first_cousins_should_not_marry(gedcom):
+    """
+        US19: first cousins should not marry one another.
+    """
+
+    errors = []
+
+    def find_family_with_child(child_id, gedcom):
+        """
+            helper function for finding families with children as input.
+        """
+
+        for family in gedcom.families:
+            if child_id in family.children:
+                return gedcom.family_with_id(family.id)
+
+    for fam in gedcom.families:
+
+        if fam.husband_id == None:
+            continue
+
+        elif fam.wife_id == None:
+            continue
+
+        else:
+            fam_with_husb_as_child = find_family_with_child(fam.husband_id, gedcom)
+            fam_with_wife_as_child = find_family_with_child(fam.wife_id, gedcom)
+
+            if fam_with_husb_as_child == None:
+                continue
+
+            if fam_with_wife_as_child == None:
+                continue
+        
+            husbands_father = fam_with_husb_as_child.husband_id
+            husbands_mother = fam_with_husb_as_child.wife_id
+
+            wifes_father = fam_with_wife_as_child.husband_id
+            wifes_mother = fam_with_wife_as_child.wife_id
+
+            if husbands_father != None and husbands_mother != None and wifes_father != None and wifes_mother != None:
+                husbands_fathers_fam = find_family_with_child(husbands_father, gedcom)
+                husbands_mothers_fam = find_family_with_child(husbands_mother, gedcom)
+
+                wifes_fathers_fam = find_family_with_child(wifes_father, gedcom)
+                wifes_mothers_fam = find_family_with_child(wifes_mother, gedcom)
+
+                if husbands_fathers_fam:
+                    if wifes_fathers_fam:
+                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
+                    if wifes_mothers_fam:
+                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
+
+                if husbands_mothers_fam:
+                    if wifes_fathers_fam:
+                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
+                    if wifes_mothers_fam:
+                        errors.append(f"Error: US19: The family with id {fam.id} has first cousins as a married couple husband: {fam.husband_id}, wife: {fam.wife_id}")
+    return errors
+
+
+def validate_aunts_and_uncles(gedcom):
+    """
+        aunts and uncles should not marry their nieces or nephews.
+    """
+
+    errors = []
+
+    def find_family_with_child(child_id, gedcom):
+        """
+            helper function for finding families with children as input.
+        """
+
+        for family in gedcom.families:
+            if child_id in family.children:
+                return gedcom.family_with_id(family.id)
+
+    for fam in gedcom.families:
+
+        if fam.husband_id == None:
+            continue
+
+        elif fam.wife_id == None:
+            continue
+
+        else:
+            fam_with_husb_as_child = find_family_with_child(fam.husband_id, gedcom)
+            fam_with_wife_as_child = find_family_with_child(fam.wife_id, gedcom)
+
+            if fam_with_husb_as_child == None:
+                continue
+
+            if fam_with_wife_as_child == None:
+                continue
+        
+            husbands_father = fam_with_husb_as_child.husband_id
+            husbands_mother = fam_with_husb_as_child.wife_id
+
+            wifes_father = fam_with_wife_as_child.husband_id
+            wifes_mother = fam_with_wife_as_child.wife_id
+
+            if husbands_father != None and husbands_mother != None and wifes_father != None and wifes_mother != None:
+                husbands_fathers_fam = find_family_with_child(husbands_father, gedcom)
+                husbands_mothers_fam = find_family_with_child(husbands_mother, gedcom)
+
+                wifes_fathers_fam = find_family_with_child(wifes_father, gedcom)
+                wifes_mothers_fam = find_family_with_child(wifes_mother, gedcom)
+
+
+                if husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam == None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.husband_id in wifes_fathers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}")
+                
+                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam != None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}")
+                
+                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam != None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.husband_id in wifes_fathers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}")
+                
+                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam != None:
+                    if fam.wife_id in husbands_mothers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}")
+                
+                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam == None:
+                   if fam.wife_id in husbands_mothers_fam.children or fam.husband_id in wifes_fathers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}")
+
+                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam != None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.husband_id in wifes_fathers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam != None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam == None:
+                    if fam.wife_id in husbands_fathers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+            
+                elif husbands_fathers_fam == None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam == None:
+                    if fam.wife_id in husbands_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam == None:
+                    if fam.husband_id in wifes_fathers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam == None and wifes_mothers_fam != None:
+                    if fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam != None and husbands_mothers_fam != None and wifes_fathers_fam != None and wifes_mothers_fam != None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.wife_id in husbands_mothers_fam.children or fam.husband_id in wifes_fathers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam == None and husbands_mothers_fam == None and wifes_fathers_fam != None and wifes_mothers_fam != None:
+                    if fam.husband_id in wifes_fathers_fam.children or fam.husband_id in wifes_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                elif husbands_fathers_fam != None and husbands_mothers_fam != None and wifes_fathers_fam == None and wifes_mothers_fam == None:
+                    if fam.wife_id in husbands_fathers_fam.children or fam.wife_id in husbands_mothers_fam.children:
+                        errors.append(f"Error: US20: family with id {fam.id} has uncles and aunts married to niece and nephews husband: {fam.husband_id}, wife: {fam.wife_id}") 
+
+                else:
+                    continue
+    return errors
+                
 
 def validate_list_living_married(gedcom):
     """
@@ -456,6 +715,7 @@ def validate_list_living_married(gedcom):
             living_married.append(f'Living Married: US30: ({wife.id}) {wife.name}')
     return living_married
     
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -476,6 +736,8 @@ all_validators = [
     validate_correct_gender, #US21
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
+    validate_first_cousins_should_not_marry, #US19
+    validate_aunts_and_uncles #US20
     validate_list_deceased, #US29
     validate_list_living_married #US30
 ]
