@@ -734,10 +734,11 @@ all_validators = [
     validate_no_marriage_to_children, #US17
     validate_no_marriage_to_siblings, #US18
     validate_correct_gender, #US21
+    validate_unique_families_by_spouses,  # US24
     validate_unique_first_name_in_family,  # US25
     validate_corresponding_entries, #US26
     validate_first_cousins_should_not_marry, #US19
-    validate_aunts_and_uncles #US20
+    validate_aunts_and_uncles, #US20
     validate_list_deceased, #US29
     validate_list_living_married #US30
 ]
