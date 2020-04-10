@@ -714,7 +714,20 @@ def validate_list_living_married(gedcom):
         if wife != None and wife.alive:
             living_married.append(f'Living Married: US30: ({wife.id}) {wife.name}')
     return living_married
-    
+
+
+def list_recent_deaths(gedcom):
+    """
+           US36: List all people in a GEDCOM file who died in the last 30 days
+    """
+    recent_death = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        if individual.death and individual.death <= today and (today - individual.death).days <= 30:
+            recent_death.append(f'Recent Death: Individual ({individual.id}) {individual.name} was recently died in {gedcom.date_string(individual.death)}')
+
+    return recent_death
+
 
 all_validators = [
     validate_dates_before_current, #US01
@@ -740,7 +753,8 @@ all_validators = [
     validate_first_cousins_should_not_marry, #US19
     validate_aunts_and_uncles, #US20
     validate_list_deceased, #US29
-    validate_list_living_married #US30
+    validate_list_living_married, #US30
+    list_recent_deaths,  # US36
 ]
 
 

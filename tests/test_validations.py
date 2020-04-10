@@ -1,7 +1,7 @@
 from gedcom.validation import *
 from gedcom.GedcomParser import GedcomParser
 from gedcom import validation, Family, Gedcom, Individual
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
@@ -641,3 +641,21 @@ def test_list_living_married():
   assert len(errors) == 2
   assert errors[0] == 'Living Married: US30: (I01) John Smith'
   assert errors[1] == 'Living Married: US30: (I02) Abby Smith'
+
+
+def test_list_recent_deaths():
+    """
+        Test US36: List recent death
+    """
+    individuals = [
+        Individual('I01', name='Morgan Freeman', death=datetime.now()),
+        Individual('I02', name='Megan Freeman', death=datetime.now() - timedelta(days=15)),
+        Individual('I03', name='Sarah Freeman', death=datetime.now() - timedelta(days=31))
+    ]
+
+    gedcom = Gedcom(individuals=individuals)
+    recent_death = validation.list_recent_deaths(gedcom)
+
+    assert len(recent_death) == 2
+    assert recent_death[0] == f"Recent Death: Individual (I01) Morgan Freeman was recently died in {gedcom.date_string(individuals[0].death)}"
+    assert recent_death[1] == f"Recent Death: Individual (I02) Megan Freeman was recently died in {gedcom.date_string(individuals[1].death)}"
