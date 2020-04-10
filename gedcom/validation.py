@@ -729,6 +729,23 @@ def list_recent_deaths(gedcom):
     return recent_death
 
 
+def list_upcoming_birthdays(gedcom):
+    """
+        US38: List all living people in a GEDCOM file whose birthdays occur in the next 30 days
+    """
+    upcoming_birthdays = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        birthday = individual.birthday
+        if birthday and birthday <= today:
+            this_year_birthday = datetime.datetime(year=today.year, month=birthday.month, day=birthday.day)
+            next_year_birthday = datetime.datetime(year=today.year+1, month=birthday.month, day=birthday.day)
+            upcoming_birthday = this_year_birthday if this_year_birthday >= today else next_year_birthday
+            if (upcoming_birthday - today).days <= 30:
+                upcoming_birthdays.append(f'Upcoming Birthday: Individual ({individual.id}) {individual.name} has upcoming birthday on {gedcom.date_string(upcoming_birthday)}')
+
+    return upcoming_birthdays
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -755,6 +772,7 @@ all_validators = [
     validate_list_deceased, #US29
     validate_list_living_married, #US30
     list_recent_deaths,  # US36
+    list_upcoming_birthdays,  # US38
 ]
 
 

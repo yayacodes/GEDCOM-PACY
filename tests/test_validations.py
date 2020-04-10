@@ -659,3 +659,22 @@ def test_list_recent_deaths():
     assert len(recent_death) == 2
     assert recent_death[0] == f"Recent Death: Individual (I01) Morgan Freeman was recently died in {gedcom.date_string(individuals[0].death)}"
     assert recent_death[1] == f"Recent Death: Individual (I02) Megan Freeman was recently died in {gedcom.date_string(individuals[1].death)}"
+
+
+def test_list_upcoming_birthdays():
+    """
+        Test US38: List upcoming birthdays
+    """
+    today = datetime.now()
+    individuals = [
+        Individual('I01', name='Morgan Freeman', birthday=today - timedelta(days=365*10-10)),
+        Individual('I02', name='Megan Freeman', birthday=today - timedelta(days=365*10-60)),
+    ]
+
+    gedcom = Gedcom(individuals=individuals)
+    upcoming_birthdays = validation.list_upcoming_birthdays(gedcom)
+
+    assert len(upcoming_birthdays) == 1
+    birthday = individuals[0].birthday
+    assert upcoming_birthdays[0] == f"Upcoming Birthday: Individual (I01) Morgan Freeman has upcoming birthday on " \
+                                    f"{gedcom.date_string(datetime(year=today.year, month=birthday.month, day=birthday.day))}"
