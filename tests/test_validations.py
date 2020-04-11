@@ -708,4 +708,42 @@ def test_validate_born_during_parents_marriage():
   assert len(errors) == 1
   assert errors[0] == f'Error: US08: Individual I01 was born after the divorce of their parents in F01'
 
+def test_validate_born_before_parents_death():
+  """
+    Test US09: Birth before death of parents (and not more than 9 months after death of father)
+  """
 
+  # Child born more than 9 months after father's death
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', death=datetime(year=2008, month=10, day=10)),
+    Individual('I03')
+  ]
+  families = [ Family('F01', husband_id='I02', wife_id='I03', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US09: Individual I01 born more than 9 months after death of their father, I02, in family F01'
+
+  # Child born after mother's death
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', death=datetime(year=2010, month=8, day=10), spouse='F01'),
+    Individual('I03', spouse='F01')
+  ]
+  families = [ Family('F01', husband_id='I03', wife_id='I02', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US09: Individual I01 born after death of their mother, I02, in family F01'
+
+  # Child born to parents not dead yet
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', spouse='F01'),
+    Individual('I03', spouse='F01')
+  ]
+  families = [ Family('F01', husband_id='I02', wife_id='I03', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 0
