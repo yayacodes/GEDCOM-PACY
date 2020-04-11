@@ -72,3 +72,23 @@ class Gedcom:
     def family_with_id(self, id):
         family = [f for f in self.families if f.id == id]
         return family[0] if len(family) > 0 else None
+
+    def get_parents(self, child_id):
+        
+        if child_id is None:
+            return None
+
+        child = self.individual_with_id(child_id)
+        if child is None or child.child is None:
+            return None
+
+        family = self.family_with_id(child.child)
+        if family is None:
+            return None
+        
+        husband = self.individual_with_id(family.husband_id)
+        wife = self.individual_with_id(family.wife_id)
+        if wife is None and husband is None:
+            return None
+        
+        return { 'mother': wife, 'father': husband}
