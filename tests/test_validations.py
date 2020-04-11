@@ -678,3 +678,29 @@ def test_list_upcoming_birthdays():
     birthday = individuals[0].birthday
     assert upcoming_birthdays[0] == f"Upcoming Birthday: Individual (I01) Morgan Freeman has upcoming birthday on " \
                                     f"{gedcom.date_string(datetime(year=today.year, month=birthday.month, day=birthday.day))}"
+
+def test_list_large_age_diff():
+    """
+        Test US39: List all couples who were married when the older spouse was more than twice as old as the younger spouse
+    """
+    # Wife is two times older on wedding day
+    families = [ Family('F01', married=datetime(2000, 1, 1), husband_id='I01', wife_id='I02')]
+    individuals = [
+    Individual('I01', name = "John Smith", birthday = datetime(1980, 1, 1), spouses=['F01']),
+    Individual('I02', name = "Abby Smith", birthday = datetime(1940, 1, 1), spouses=['F01'])
+    ]
+    gedcom = Gedcom(individuals = individuals, families = families)
+    errors = validation.list_large_age_diff(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == '(I02) Abby Smith was more than two times older than her husband (I01) John Smith when they got married on 2000-01-01'
+
+    # Husband is two times older on wedding day
+    families = [ Family('F01', married=datetime(2000, 1, 1), husband_id='I01', wife_id='I02')]
+    individuals = [
+    Individual('I01', name = "John Smith", birthday = datetime(1940, 1, 1), spouses=['F01']),
+    Individual('I02', name = "Abby Smith", birthday = datetime(1980, 1, 1), spouses=['F01'])
+    ]
+    gedcom = Gedcom(individuals = individuals, families = families)
+    errors = validation.list_large_age_diff(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == '(I01) John Smith was more than two times older than his wife (I02) Abby Smith when they got married on 2000-01-01'
