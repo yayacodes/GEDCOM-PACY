@@ -36,5 +36,11 @@
   "tests/test_validations.py::test_validate_no_marriage_to_siblings",
   "tests/test_validations.py::test_validate_no_marriage_to_children",
   "tests/test_validations.py::test_validate_first_cousins_should_not_marry",
-  "tests/test_validations.py::test_validate_aunts_and_uncles"
+  "tests/test_validations.py::test_validate_aunts_and_uncles",
+  "tests/test_validations.py::test_list_deceased",
+  "tests/test_validations.py::test_list_living_married",
+  "tests/test_validations.py::test_list_recent_deaths",
+  "tests/test_validations.py::test_list_upcoming_birthdays",
+  "tests/test_validations.py::test_list_living_single",
+  "tests/test_validations.py::test_older_siblings_by_age"
 ]
