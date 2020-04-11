@@ -3,6 +3,8 @@ import datetime
 from itertools import combinations
 from collections import defaultdict
 
+from datetime import timedelta
+
 def validate_too_old_individual(gedcom):
     result = []
     for individual in gedcom.individuals:
@@ -746,6 +748,33 @@ def list_upcoming_birthdays(gedcom):
 
     return upcoming_birthdays
 
+def validate_born_during_parents_marriage(gedcom):
+    """
+        US08: Birth before marriage of parents
+    """
+    DAYS_PER_MONTH = 30
+
+    errors = []
+    for individual in gedcom.individuals:
+        if individual.child is None or individual.birthday is None:
+            continue
+
+        family = gedcom.family_with_id(individual.child)
+        if family is None:
+            continue
+        
+        if family.married is not None:
+            if individual.birthday < family.married:
+                errors.append(f'Error: US08: Individual {individual.id} was born before the marriage of their parents in {family.id}')
+        
+        if family.divorced is not None:
+            nine_months_after_divorce = family.divorced + timedelta(days=9*DAYS_PER_MONTH)
+            print(f'Days {nine_months_after_divorce} -- {individual.birthday}')
+            if individual.birthday >= nine_months_after_divorce:
+                errors.append(f'Error: US08: Individual {individual.id} was born after the divorce of their parents in {family.id}')
+
+    return errors
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -753,7 +782,8 @@ all_validators = [
     validate_marriage_after_divorce, #US04
     validate_marriage_before_death, #US05
     validate_divorce_before_death, #US06
-    validate_too_old_individual, #US07
+    validate_too_old_individual, #US07,
+    validate_born_during_parents_marriage, #US08
     validate_marriage_after_fourteen, #US10
     validate_no_bigamy, #US11
     validate_parents_not_too_old, #US12
