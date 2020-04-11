@@ -678,3 +678,34 @@ def test_list_upcoming_birthdays():
     birthday = individuals[0].birthday
     assert upcoming_birthdays[0] == f"Upcoming Birthday: Individual (I01) Morgan Freeman has upcoming birthday on " \
                                     f"{gedcom.date_string(datetime(year=today.year, month=birthday.month, day=birthday.day))}"
+
+
+def test_validate_born_during_parents_marriage():
+  """
+    Test US08: Birth before marriage of parents (and not more than 9 months after their divorce)
+  """
+
+  # Individual born before the marriage of parents
+  individuals = [ Individual('I01', child='F01', birthday=datetime.now() - timedelta(days=1)) ]
+  families = [ Family('F01', married=datetime.now()) ]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == f'Error: US08: Individual I01 was born before the marriage of their parents in F01'
+
+  # Indiviudal born after marriage of parents and before their divorce
+  individuals = [ Individual('I01', child='F01', birthday=datetime(year=2010, month=10, day=10)) ]
+  families = [ Family('F01', married=datetime(year=2005, month=10, day=10), divorced=datetime(year=2019, month=10, day=10))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 0
+
+  # Individual born 9 months after parent's divorce
+  inidividuals = [ Individual('I01', child='F01', birthday=datetime(year=2010, month=10, day=10)) ]
+  families = [ Family('F01', divorced=datetime(year=2005, month=10, day=10)) ]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == f'Error: US08: Individual I01 was born after the divorce of their parents in F01'
+
+
