@@ -440,99 +440,6 @@ def validate_no_marriage_to_siblings(gedcom):
                     errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
     return errors
 
-  
-def validate_unique_first_name_in_family(gedcom):
-    """
-        US25: No more than one child with the same name and birth date should appear in a family
-    """
-    errors = []
-    for family in gedcom.families:
-        for (id1, id2) in combinations(family.children, 2):
-            child1, child2 = gedcom.individual_with_id(id1), gedcom.individual_with_id(id2)
-            if not (child1 and child2):
-                continue
-            if child1.first_name == child2.first_name:
-                errors.append(f'Error: US25: Family with id {family.id} has two children with the same first name \'{child1.first_name}\'')
-    return errors
-
-
-def validate_unique_families_by_spouses(gedcom):
-    """
-        US24: No more than one family with the same spouses by name and the same marriage date should appear in a GEDCOM file
-    """
-    errors = []
-    for (family1, family2) in combinations(gedcom.families, 2):
-        husband1, wife1 = gedcom.individual_with_id(family1.husband_id), gedcom.individual_with_id(family1.wife_id)
-        husband2, wife2 = gedcom.individual_with_id(family2.husband_id), gedcom.individual_with_id(family2.wife_id)
-        if not (husband1 and wife1 and husband2 and wife2):
-            continue
-
-        if family1.married == family2.married and husband1.name == husband2.name and wife1.name == wife2.name:
-            errors.append(f'Error: US24: Families with id {family1.id} and {family2.id} have the same spouses '
-                          f'names ({husband1.name}, {wife1.name}) and marriage date ({family1.married})')
-    return errors
-
-def validate_no_marriage_to_children(gedcom):
-    """
-        US17: No marriage to children
-    """
-    errors = []
-
-    def get_families_with_spouse(spouse_id):
-        result = []
-        for family in gedcom.families: 
-            if family.husband_id == spouse_id:
-                result.append(family)
-            elif family.wife_id == spouse_id:
-                result.append(family)
-        return result
-
-    for family in gedcom.families:
-        # Check whether child is married to their parent
-        if family.children:
-            family_spouses = [family.husband_id, family.wife_id]
-            
-            for child_id in family.children:
-                childs_families = get_families_with_spouse(child_id)
-                for childs_family in childs_families:
-                    if childs_family.husband_id in family_spouses:
-                        errors.append(f'Error: US17: Individiual {childs_family.husband_id} is married to {child_id}, a child of theirs in Family {family.id}.')
-                    if childs_family.wife_id in family_spouses:
-                        errors.append(f'Error: US17: Individiual {childs_family.wife_id} is married to {child_id}, a child of theirs in Family {family.id}.')
-    return errors
-
-def validate_no_marriage_to_siblings(gedcom):
-    """
-        US18: No marriage to siblings
-    """
-    errors = []
-
-    def get_families_with_spouse(spouse_id):
-        result = []
-        for family in gedcom.families: 
-            if family.husband_id == spouse_id:
-                result.append(family)
-            elif family.wife_id == spouse_id:
-                result.append(family)
-        return result
-
-    for family in gedcom.families:
-        # Check whether child is married to their parent
-        if not family.children or len(family.children) == 0:
-            pass
-
-        for child_id in family.children:
-            siblings = list(filter(lambda x: x is not child_id, family.children))
-
-            # Check this child's fmailies to see if their spouses are siblings
-            childs_families = get_families_with_spouse(child_id)
-            for childs_family in childs_families:
-                if childs_family.husband_id in siblings:
-                    errors.append(f'Error: US18: Individiual {childs_family.husband_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
-                if childs_family.wife_id in siblings:
-                    errors.append(f'Error: US18: Individiual {childs_family.wife_id} is married to {child_id}, a sibling of theirs in Family {family.id}.')
-    return errors
-
 
 def validate_first_cousins_should_not_marry(gedcom):
     """
@@ -769,6 +676,59 @@ def list_large_age_diff(gedcom):
     
     return age_diff
 
+def older_siblings_by_age(gedcom):
+    """
+        US28: for a family siblings in a decreasing order.
+    """
+    siblings = []
+    temp_lst = []
+
+    for family in gedcom.families:
+
+        if family.children == None:
+            continue
+
+        child_list = family.children
+        
+        for child in child_list:
+            indi = gedcom.individual_with_id(child)
+            if indi == None:
+                continue
+
+            child_id = indi.id
+            child_age = indi.age
+            child_tup = (family.id, child_id, child_age)
+            temp_lst.append(child_tup)
+
+        siblings.extend(sorted(temp_lst, key=lambda x: x[2], reverse=True))
+        temp_lst.clear()
+
+    result = []
+
+    for item in siblings:
+        result.append(f'US28: For family with ID: {item[0]} child with ID: {item[1]} has age: {item[2]}')
+
+    return result
+
+
+def list_living_single(gedcom):
+    """
+        US31: List all living people over 30 who have never been married in a GEDCOM file.
+    """
+
+    living_singles = []
+    
+    print('in list living single')
+
+    for indi in gedcom.individuals:
+        if indi.age < 30:
+            continue
+        
+        if indi.alive and indi.spouse == None:
+            living_singles.append(f'Living Single: US31 {indi.id}, {indi.name}')
+
+    return living_singles
+
 def validate_born_during_parents_marriage(gedcom):
     """
         US08: Birth before marriage of parents
@@ -823,6 +783,7 @@ def validate_born_before_parents_death(gedcom):
 
     return errors
 
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -853,6 +814,9 @@ all_validators = [
     list_recent_deaths,  # US36
     list_upcoming_birthdays,  # US38
     list_large_age_diff #US34
+    list_living_single, #US31
+    older_siblings_by_age, #US28
+
 ]
 
 
