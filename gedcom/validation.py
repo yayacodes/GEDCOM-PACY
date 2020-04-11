@@ -655,6 +655,27 @@ def list_upcoming_birthdays(gedcom):
     return upcoming_birthdays
 
 
+def list_large_age_diff(gedcom):
+    """
+        US34: List all couples who were married when the older spouse was more than twice as old as the younger spouse
+    """
+    age_diff = []
+    for family in gedcom.families:
+        husband = gedcom.individual_with_id(family.husband_id)
+        wife = gedcom.individual_with_id(family.wife_id)
+        marriage_date = family.married
+
+        if(marriage_date is not None and husband.birthday is not None and wife.birthday is not None):
+            husband_marriage_age = (marriage_date - husband.birthday).days / 365.25
+            wife_marriage_age = (marriage_date - wife.birthday).days / 365.25
+
+        if (husband_marriage_age > (2*wife_marriage_age)): #husband was 2 times older when they wed
+            age_diff.append(f'({husband.id}) {husband.name} was more than two times older than his wife ({wife.id}) {wife.name} when they got married on {marriage_date.date()}')
+        if (wife_marriage_age > (2*husband_marriage_age)): #wife was 2 times older when they wed
+            age_diff.append(f'({wife.id}) {wife.name} was more than two times older than her husband ({husband.id}) {husband.name} when they got married on {marriage_date.date()}')
+    
+    return age_diff
+
 def older_siblings_by_age(gedcom):
     """
         US28: for a family siblings in a decreasing order.
@@ -708,7 +729,6 @@ def list_living_single(gedcom):
 
     return living_singles
 
- 
 def validate_born_during_parents_marriage(gedcom):
     """
         US08: Birth before marriage of parents
@@ -793,6 +813,7 @@ all_validators = [
     validate_list_living_married, #US30
     list_recent_deaths,  # US36
     list_upcoming_birthdays,  # US38
+    list_large_age_diff #US34
     list_living_single, #US31
     older_siblings_by_age, #US28
 
