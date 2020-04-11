@@ -245,3 +245,44 @@ Living Married: US30: (I36) Bernadett Potter
 Living Married: US30: (I37) Maxim Malfoy
 Living Married: US30: (I38) Kelsa Potter
 Living Married: US30: (I51) Abby Smith
+Living Single: US31 I03, Morgan Freeman
+Living Single: US31 I04, Angie Monte
+Living Single: US31 I05, Morgan Freeman
+Living Single: US31 I06, Angie Monte
+Living Single: US31 I14, David Chang
+Living Single: US31 I15, Sarah Monte
+Living Single: US31 I17-1, John Smith
+Living Single: US31 I17-2, Abby Smith
+Living Single: US31 I18-1, John Smith
+Living Single: US31 I18-2, Abby Smith
+Living Single: US31 I24-1, Morgan Freeman
+Living Single: US31 I24-2, Sarah Freeman
+Living Single: US31 I24-3, Morgan Freeman
+Living Single: US31 I24-4, Sarah Freeman
+Living Single: US31 I38-1, John Smith
+Living Single: US31 I38-2, Abby Smith
+Living Single: US31 I51, Abby Smith
+US28: For family with ID: F05 child with ID: I14 has age: 220
+US28: For family with ID: F05 child with ID: I15 has age: 220
+US28: For family with ID: F06 child with ID: I16 has age: 10
+US28: For family with ID: F06 child with ID: I17 has age: 9
+US28: For family with ID: F06 child with ID: I18 has age: 9
+US28: For family with ID: F12-07 child with ID: I12-16 has age: 20
+US28: For family with ID: F12-07 child with ID: I12-19 has age: 20
+US28: For family with ID: F12-07 child with ID: I12-20 has age: 20
+US28: For family with ID: F12-07 child with ID: I12-21 has age: 20
+US28: For family with ID: F12-07 child with ID: I12-22 has age: 20
+US28: For family with ID: F12-07 child with ID: I12-23 has age: 20
+US28: For family with ID: F17-50 child with ID: I17-1 has age: 40
+US28: For family with ID: F18-51 child with ID: I18-1 has age: 40
+US28: For family with ID: F18-51 child with ID: I18-2 has age: 38
+US28: For family with ID: F25-1 child with ID: I25-1 has age: 10
+US28: For family with ID: F25-1 child with ID: I25-2 has age: 7
+US28: For family with ID: F26 child with ID: I32 has age: 353
+US28: For family with ID: F27 child with ID: I29 has age: 73
+US28: For family with ID: F27 child with ID: I26 has age: 72
+US28: For family with ID: F28 child with ID: I33 has age: 51
+US28: For family with ID: F31 child with ID: I34 has age: 19
+US28: For family with ID: F32 child with ID: I35 has age: 40
+US28: For family with ID: F33 child with ID: I36 has age: 40
+US28: For family with ID: F33 child with ID: I39 has age: 33
