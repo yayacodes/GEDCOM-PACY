@@ -689,7 +689,6 @@ def test_list_living_single():
   living_singles = validation.list_living_single(gedcom)
 
   assert len(living_singles) == 18
-
   assert living_singles[0] == 'Living Single: US31 I03, Morgan Freeman'
   assert living_singles[1] == 'Living Single: US31 I04, Angie Monte'
   assert living_singles[2] == 'Living Single: US31 I05, Morgan Freeman'
