@@ -714,7 +714,37 @@ def validate_list_living_married(gedcom):
         if wife != None and wife.alive:
             living_married.append(f'Living Married: US30: ({wife.id}) {wife.name}')
     return living_married
-    
+
+
+def list_recent_deaths(gedcom):
+    """
+           US36: List all people in a GEDCOM file who died in the last 30 days
+    """
+    recent_death = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        if individual.death and individual.death <= today and (today - individual.death).days <= 30:
+            recent_death.append(f'Recent Death: Individual ({individual.id}) {individual.name} was recently died in {gedcom.date_string(individual.death)}')
+
+    return recent_death
+
+
+def list_upcoming_birthdays(gedcom):
+    """
+        US38: List all living people in a GEDCOM file whose birthdays occur in the next 30 days
+    """
+    upcoming_birthdays = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        birthday = individual.birthday
+        if birthday and birthday <= today:
+            this_year_birthday = datetime.datetime(year=today.year, month=birthday.month, day=birthday.day)
+            next_year_birthday = datetime.datetime(year=today.year+1, month=birthday.month, day=birthday.day)
+            upcoming_birthday = this_year_birthday if this_year_birthday >= today else next_year_birthday
+            if (upcoming_birthday - today).days <= 30:
+                upcoming_birthdays.append(f'Upcoming Birthday: Individual ({individual.id}) {individual.name} has upcoming birthday on {gedcom.date_string(upcoming_birthday)}')
+
+    return upcoming_birthdays
 
 all_validators = [
     validate_dates_before_current, #US01
@@ -740,7 +770,9 @@ all_validators = [
     validate_first_cousins_should_not_marry, #US19
     validate_aunts_and_uncles, #US20
     validate_list_deceased, #US29
-    validate_list_living_married #US30
+    validate_list_living_married, #US30
+    list_recent_deaths,  # US36
+    list_upcoming_birthdays,  # US38
 ]
 
 
