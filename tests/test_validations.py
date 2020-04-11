@@ -13,33 +13,33 @@ def parse_gedcom(file):
     return gedcom
 
 def test_validate_too_old_individual():
-    gedcom = parse_gedcom('../res/family_validation.ged')
+    gedcom = parse_gedcom('..res/family_validation.ged')
     errors = validate_too_old_individual(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: US07: The individual Morgan Freeman (I01) is too old, age = 151.'
 
 def test_marriage_before_death():
-    gedcom = parse_gedcom('../res/marriage_before_death_test.ged')
+    gedcom = parse_gedcom('..res/marriage_before_death_test.ged')
     errors = validate_marriage_before_death(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: US05: Family (F01) has the husband Morgan Freeman (I01) death date (01/02/00) before the marriage date (01/01/01)'
 
 def test_divorce_before_death():
-    gedcom = parse_gedcom('../res/divorce_before_death_test.ged')
+    gedcom = parse_gedcom('..res/divorce_before_death_test.ged')
     errors = validate_divorce_before_death(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: US06: Family (F01) has the husband Morgan Freeman (I01) death date (01/02/00) before the divorce date (01/01/01)'
 
 def test_birth_before_death():
     parser = GedcomParser()
-    gedcom = parser.parse('../res/pete_sprint1_tests.ged')
+    gedcom = parser.parse('..res/pete_sprint1_tests.ged')
     errors = validation.birth_before_death(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: US03: The individual Pete (@I1@) has death before birth, death = 1995-06-10 00:00:00, birth = 1996-05-18 00:00:00'
 
 def test_birth_before_marriage():
     parser = GedcomParser()
-    gedcom = parser.parse('../res/pete_sprint1_tests.ged')
+    gedcom = parser.parse('..res/pete_sprint1_tests.ged')
     errors = validation.birth_before_marriage(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Error: US02: The individual Pete (@I1@) has marriage before birth, marriage = 1995-05-06 00:00:00, birth = 1996-05-18 00:00:00'
@@ -455,7 +455,7 @@ def test_validate_sibling_spacing_unrealistic():
 
 
 def test_validate_parents_not_too_old():
-  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  gedcom = parse_gedcom('..res/pete_Sprint2_test.ged')
   errors = validate_parents_not_too_old(gedcom)
   assert len(errors) == 6
   assert errors[0] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child John Cena'
@@ -466,7 +466,7 @@ def test_validate_parents_not_too_old():
   assert errors[5] == 'Error: US12: parents Shawn Cena/Amanda Something too old for child Bigshow Cena'
 
 def test_validate_multiple_births():
-  gedcom = parse_gedcom('../res/pete_Sprint2_test.ged')
+  gedcom = parse_gedcom('..res/pete_Sprint2_test.ged')
   errors = validate_multiple_births(gedcom)
   assert len(errors) == 1
   assert errors[0] == 'Error: US14: For family with id @F1@ there are more than 5 births at the same time'
@@ -597,7 +597,7 @@ def test_validate_first_cousins_should_not_marry():
   """
     testing US19
   """
-  gedcom = parse_gedcom('../res/Pete_sprint3_US19_test.ged')
+  gedcom = parse_gedcom('..res/Pete_sprint3_US19_test.ged')
   errors = validation.validate_first_cousins_should_not_marry(gedcom)
   print(errors)
 
@@ -608,7 +608,7 @@ def test_validate_aunts_and_uncles():
   """
     testing US20
   """
-  gedcom = parse_gedcom('../res/Pete_sprint3_US20_test.ged')
+  gedcom = parse_gedcom('..res/Pete_sprint3_US20_test.ged')
   errors = validation.validate_aunts_and_uncles(gedcom)
 
   assert len(errors) == 1
@@ -685,10 +685,11 @@ def test_list_living_single():
     tests for US31: list living singles
   """
 
-  gedcom = parse_gedcom('../res/Pete_Sprint_4_test.ged')
+  gedcom = parse_gedcom('..res/Pete_Sprint_4_test.ged')
   living_singles = validation.list_living_single(gedcom)
 
   assert len(living_singles) == 18
+
   assert living_singles[0] == 'Living Single: US31 I03, Morgan Freeman'
   assert living_singles[1] == 'Living Single: US31 I04, Angie Monte'
   assert living_singles[2] == 'Living Single: US31 I05, Morgan Freeman'
@@ -713,7 +714,7 @@ def test_older_siblings_by_age():
     testing US28: older sibs by age
   """
 
-  gedcom = parse_gedcom('../res/Pete_Sprint_4_test.ged')
+  gedcom = parse_gedcom('..res/Pete_Sprint_4_test.ged')
   older_siblings = validation.older_siblings_by_age(gedcom)
 
   assert len(older_siblings) == 24
