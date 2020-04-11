@@ -3,6 +3,8 @@ import datetime
 from itertools import combinations
 from collections import defaultdict
 
+from datetime import timedelta
+
 def validate_too_old_individual(gedcom):
     result = []
     for individual in gedcom.individuals:
@@ -195,7 +197,6 @@ def validate_no_bigamy(gedcom):
                     marriage_end_date = family1.divorced if family1.divorced is not None else datetime.datetime.now()
 
                     if marriage_end_date is not None and family2.married > family1.married and family2.married <= marriage_end_date:
-                        print(':', family1, family2)
                         family2_spouse = family2.husband_id if family2.husband_id is not spouse.id else family2.wife_id
                         family2_spouse = gedcom.individual_with_id(family2_spouse)
 
@@ -746,6 +747,7 @@ def list_upcoming_birthdays(gedcom):
 
     return upcoming_birthdays
 
+
 def list_large_age_diff(gedcom):
     """
         US34: List all couples who were married when the older spouse was more than twice as old as the younger spouse
@@ -767,6 +769,60 @@ def list_large_age_diff(gedcom):
     
     return age_diff
 
+def validate_born_during_parents_marriage(gedcom):
+    """
+        US08: Birth before marriage of parents
+    """
+    DAYS_PER_MONTH = 30
+
+    errors = []
+    for individual in gedcom.individuals:
+        if individual.child is None or individual.birthday is None:
+            continue
+
+        family = gedcom.family_with_id(individual.child)
+        if family is None:
+            continue
+        
+        if family.married is not None:
+            if individual.birthday < family.married:
+                errors.append(f'Error: US08: Individual {individual.id} was born before the marriage of their parents in {family.id}')
+        
+        if family.divorced is not None:
+            nine_months_after_divorce = family.divorced + timedelta(days=9*DAYS_PER_MONTH)
+            print(f'Days {nine_months_after_divorce} -- {individual.birthday}')
+            if individual.birthday >= nine_months_after_divorce:
+                errors.append(f'Error: US08: Individual {individual.id} was born after the divorce of their parents in {family.id}')
+
+    return errors
+
+def validate_born_before_parents_death(gedcom):
+    """
+        US09
+    """
+    DAYS_PER_MONTH = 30
+
+    errors = []
+    for individual in gedcom.individuals:
+        if individual.birthday is None:
+            continue
+
+        parents = gedcom.get_parents(individual.id)
+        if parents is None:
+            continue 
+        
+        father = parents.get('father')
+        if father is not None and father.death is not None:
+            if individual.birthday >= father.death + timedelta(days=9*DAYS_PER_MONTH):
+                errors.append(f'Error: US09: Individual {individual.id} born more than 9 months after death of their father, {father.id}, in family {individual.child}')
+        
+        mother = parents.get('mother')
+        if mother is not None and mother.death is not None:
+            if individual.birthday >= mother.death:
+                errors.append(f'Error: US09: Individual {individual.id} born after death of their mother, {mother.id}, in family {individual.child}')
+
+    return errors
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -774,7 +830,9 @@ all_validators = [
     validate_marriage_after_divorce, #US04
     validate_marriage_before_death, #US05
     validate_divorce_before_death, #US06
-    validate_too_old_individual, #US07
+    validate_too_old_individual, #US07,
+    validate_born_during_parents_marriage, #US08
+    validate_born_before_parents_death, #US09
     validate_marriage_after_fourteen, #US10
     validate_no_bigamy, #US11
     validate_parents_not_too_old, #US12
