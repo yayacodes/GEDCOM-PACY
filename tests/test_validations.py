@@ -288,7 +288,7 @@ def test_correct_gender():
   assert errors[0] == 'Error: US21: Wife I02 in Family F01 should be female'
   assert len(errors) == 1
 
-  # Both Husband and wife are not male and female respectively
+  # Both Husband and wife are not male and femalerespectively
   families = [ Family('F01', married=datetime(1999, 9, 9), husband_id='I01', wife_id='I02')]
   individuals = [
     Individual('I01', spouses=['F01'], sex='X'),
@@ -717,3 +717,137 @@ def test_list_recent_birthds():
     errors = validation.list_recent_births(gedcom)
     assert len(errors) == 1
     assert errors[0] == 'Recent Birth Day: Individual (I01) David Wallace was born in the last 30 days on 2020-04-01'
+
+def test_list_living_single():
+  """
+    tests for US31: list living singles
+  """
+
+  gedcom = parse_gedcom('../res/Pete_Sprint_4_test.ged')
+  living_singles = validation.list_living_single(gedcom)
+
+  assert len(living_singles) == 18
+
+  assert living_singles[0] == 'Living Single: US31 I03, Morgan Freeman'
+  assert living_singles[1] == 'Living Single: US31 I04, Angie Monte'
+  assert living_singles[2] == 'Living Single: US31 I05, Morgan Freeman'
+  assert living_singles[3] == 'Living Single: US31 I06, Angie Monte'
+  assert living_singles[4] == 'Living Single: US31 I13, Morgan Freeman'
+  assert living_singles[5] == 'Living Single: US31 I14, David Chang'
+  assert living_singles[6] == 'Living Single: US31 I15, Sarah Monte'
+  assert living_singles[7] == 'Living Single: US31 I17-1, John Smith'
+  assert living_singles[8] == 'Living Single: US31 I17-2, Abby Smith'
+  assert living_singles[9] == 'Living Single: US31 I18-1, John Smith'
+  assert living_singles[10] == 'Living Single: US31 I18-2, Abby Smith'
+  assert living_singles[11] == 'Living Single: US31 I24-1, Morgan Freeman'
+  assert living_singles[12] == 'Living Single: US31 I24-2, Sarah Freeman'
+  assert living_singles[13] == 'Living Single: US31 I24-3, Morgan Freeman'
+  assert living_singles[14] == 'Living Single: US31 I24-4, Sarah Freeman'
+  assert living_singles[15] == 'Living Single: US31 I38-1, John Smith'
+  assert living_singles[16] == 'Living Single: US31 I38-2, Abby Smith'
+  assert living_singles[17] == 'Living Single: US31 I51, Abby Smith'
+
+def test_older_siblings_by_age():
+  """
+    testing US28: older sibs by age
+  """
+
+  gedcom = parse_gedcom('../res/Pete_Sprint_4_test.ged')
+  older_siblings = validation.older_siblings_by_age(gedcom)
+
+  assert len(older_siblings) == 24
+
+  assert older_siblings[0] == 'US28: For family with ID: F05 child with ID: I14 has age: 220'
+  assert older_siblings[1]== 'US28: For family with ID: F05 child with ID: I15 has age: 220'
+  assert older_siblings[2] == 'US28: For family with ID: F06 child with ID: I16 has age: 10'
+  assert older_siblings[3] == 'US28: For family with ID: F06 child with ID: I17 has age: 9'
+  assert older_siblings[4] == 'US28: For family with ID: F06 child with ID: I18 has age: 9'
+  assert older_siblings[5] == 'US28: For family with ID: F12-07 child with ID: I12-16 has age: 20'
+  assert older_siblings[6] == 'US28: For family with ID: F12-07 child with ID: I12-19 has age: 20'
+  assert older_siblings[7] == 'US28: For family with ID: F12-07 child with ID: I12-20 has age: 20'
+  assert older_siblings[8] == 'US28: For family with ID: F12-07 child with ID: I12-21 has age: 20'
+  assert older_siblings[9] == 'US28: For family with ID: F12-07 child with ID: I12-22 has age: 20'
+  assert older_siblings[10] == 'US28: For family with ID: F12-07 child with ID: I12-23 has age: 20'
+  assert older_siblings[11] == 'US28: For family with ID: F17-50 child with ID: I17-1 has age: 40'
+  assert older_siblings[12] == 'US28: For family with ID: F18-51 child with ID: I18-1 has age: 40'
+  assert older_siblings[13] == 'US28: For family with ID: F18-51 child with ID: I18-2 has age: 38'
+  assert older_siblings[14] == 'US28: For family with ID: F25-1 child with ID: I25-1 has age: 10'
+  assert older_siblings[15] == 'US28: For family with ID: F25-1 child with ID: I25-2 has age: 7'
+  assert older_siblings[16] == 'US28: For family with ID: F26 child with ID: I32 has age: 353'
+  assert older_siblings[17] == 'US28: For family with ID: F27 child with ID: I29 has age: 73'
+  assert older_siblings[18] == 'US28: For family with ID: F27 child with ID: I26 has age: 72'
+  assert older_siblings[19] == 'US28: For family with ID: F28 child with ID: I33 has age: 51'
+  assert older_siblings[20] == 'US28: For family with ID: F31 child with ID: I34 has age: 19'
+  assert older_siblings[21] == 'US28: For family with ID: F32 child with ID: I35 has age: 40'
+  assert older_siblings[22] == 'US28: For family with ID: F33 child with ID: I36 has age: 40'
+  assert older_siblings[23] == 'US28: For family with ID: F33 child with ID: I39 has age: 33'
+
+
+def test_validate_born_during_parents_marriage():
+  """
+    Test US08: Birth before marriage of parents (and not more than 9 months after their divorce)
+  """
+
+  # Individual born before the marriage of parents
+  individuals = [ Individual('I01', child='F01', birthday=datetime.now() - timedelta(days=1)) ]
+  families = [ Family('F01', married=datetime.now()) ]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == f'Error: US08: Individual I01 was born before the marriage of their parents in F01'
+
+  # Indiviudal born after marriage of parents and before their divorce
+  individuals = [ Individual('I01', child='F01', birthday=datetime(year=2010, month=10, day=10)) ]
+  families = [ Family('F01', married=datetime(year=2005, month=10, day=10), divorced=datetime(year=2019, month=10, day=10))]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 0
+
+  # Individual born 9 months after parent's divorce
+  inidividuals = [ Individual('I01', child='F01', birthday=datetime(year=2010, month=10, day=10)) ]
+  families = [ Family('F01', divorced=datetime(year=2005, month=10, day=10)) ]
+  gedcom = Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_during_parents_marriage(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == f'Error: US08: Individual I01 was born after the divorce of their parents in F01'
+
+def test_validate_born_before_parents_death():
+  """
+    Test US09: Birth before death of parents (and not more than 9 months after death of father)
+  """
+
+  # Child born more than 9 months after father's death
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', death=datetime(year=2008, month=10, day=10)),
+    Individual('I03')
+  ]
+  families = [ Family('F01', husband_id='I02', wife_id='I03', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US09: Individual I01 born more than 9 months after death of their father, I02, in family F01'
+
+  # Child born after mother's death
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', death=datetime(year=2010, month=8, day=10), spouse='F01'),
+    Individual('I03', spouse='F01')
+  ]
+  families = [ Family('F01', husband_id='I03', wife_id='I02', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 1
+  assert errors[0] == 'Error: US09: Individual I01 born after death of their mother, I02, in family F01'
+
+  # Child born to parents not dead yet
+  individuals = [
+    Individual('I01', birthday=datetime(year=2010, month=10, day=10), child='F01'),
+    Individual('I02', spouse='F01'),
+    Individual('I03', spouse='F01')
+  ]
+  families = [ Family('F01', husband_id='I02', wife_id='I03', children=['I01']) ]
+  gedcom=Gedcom(individuals=individuals, families=families)
+  errors = validation.validate_born_before_parents_death(gedcom)
+  assert len(errors) == 0
+
