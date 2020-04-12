@@ -783,6 +783,19 @@ def validate_born_before_parents_death(gedcom):
 
     return errors
 
+def list_recent_births(gedcom):
+    """
+        US35: List all people in a GEDCOM file who were born in the last 30 days
+    """
+    recent_births = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        birthday = individual.birthday
+        if birthday and birthday <= today and ((today - birthday).days <= 30):
+            recent_births.append(f'Recent Birth Day: Individual ({individual.id}) {individual.name} was born in the last 30 days on {birthday.date()}')
+
+    return recent_births
+
 
 all_validators = [
     validate_dates_before_current, #US01
@@ -816,7 +829,7 @@ all_validators = [
     list_large_age_diff, #US34
     list_living_single, #US31
     older_siblings_by_age, #US28
-
+    list_recent_births #US35
 ]
 
 
