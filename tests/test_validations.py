@@ -704,7 +704,8 @@ def test_list_large_age_diff():
     errors = validation.list_large_age_diff(gedcom)
     assert len(errors) == 1
     assert errors[0] == '(I01) John Smith was more than two times older than his wife (I02) Abby Smith when they got married on 2000-01-01'
-=======
+
+
 def test_list_living_single():
   """
     tests for US31: list living singles

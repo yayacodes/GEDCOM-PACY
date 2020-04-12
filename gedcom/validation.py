@@ -669,10 +669,10 @@ def list_large_age_diff(gedcom):
             husband_marriage_age = (marriage_date - husband.birthday).days / 365.25
             wife_marriage_age = (marriage_date - wife.birthday).days / 365.25
 
-        if (husband_marriage_age > (2*wife_marriage_age)): #husband was 2 times older when they wed
-            age_diff.append(f'({husband.id}) {husband.name} was more than two times older than his wife ({wife.id}) {wife.name} when they got married on {marriage_date.date()}')
-        if (wife_marriage_age > (2*husband_marriage_age)): #wife was 2 times older when they wed
-            age_diff.append(f'({wife.id}) {wife.name} was more than two times older than her husband ({husband.id}) {husband.name} when they got married on {marriage_date.date()}')
+            if (husband_marriage_age > (2*wife_marriage_age)): #husband was 2 times older when they wed
+                age_diff.append(f'({husband.id}) {husband.name} was more than two times older than his wife ({wife.id}) {wife.name} when they got married on {marriage_date.date()}')
+            if (wife_marriage_age > (2*husband_marriage_age)): #wife was 2 times older when they wed
+                age_diff.append(f'({wife.id}) {wife.name} was more than two times older than her husband ({husband.id}) {husband.name} when they got married on {marriage_date.date()}')
     
     return age_diff
 
@@ -813,7 +813,7 @@ all_validators = [
     validate_list_living_married, #US30
     list_recent_deaths,  # US36
     list_upcoming_birthdays,  # US38
-    list_large_age_diff #US34
+    list_large_age_diff, #US34
     list_living_single, #US31
     older_siblings_by_age, #US28
 
