@@ -681,7 +681,7 @@ def test_list_upcoming_birthdays():
 
 def test_list_large_age_diff():
     """
-        Test US39: List all couples who were married when the older spouse was more than twice as old as the younger spouse
+        Test US34: List all couples who were married when the older spouse was more than twice as old as the younger spouse
     """
     # Wife is two times older on wedding day
     families = [ Family('F01', married=datetime(2000, 1, 1), husband_id='I01', wife_id='I02')]
@@ -704,3 +704,16 @@ def test_list_large_age_diff():
     errors = validation.list_large_age_diff(gedcom)
     assert len(errors) == 1
     assert errors[0] == '(I01) John Smith was more than two times older than his wife (I02) Abby Smith when they got married on 2000-01-01'
+
+def test_list_recent_birthds():
+    """
+        Test US35: List all people in a GEDCOM file who were born in the last 30 days
+    """
+
+    individuals = [
+      Individual('I01', name = "David Wallace", birthday = datetime(2020, 4, 1))
+    ]
+    gedcom = Gedcom(individuals = individuals)
+    errors = validation.list_recent_births(gedcom)
+    assert len(errors) == 1
+    assert errors[0] == 'Recent Birth Day: Individual (I01) David Wallace was born in the last 30 days on 2020-04-01'

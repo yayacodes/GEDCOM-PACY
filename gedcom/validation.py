@@ -767,6 +767,20 @@ def list_large_age_diff(gedcom):
     
     return age_diff
 
+def list_recent_births(gedcom):
+    """
+        US34: List all people in a GEDCOM file who were born in the last 30 days
+    """
+    recent_births = []
+    today = datetime.datetime.now()
+    for individual in gedcom.individuals:
+        birthday = individual.birthday
+        if birthday and birthday <= today and ((today - birthday).days <= 30):
+            recent_births.append(f'Recent Birth Day: Individual ({individual.id}) {individual.name} was born in the last 30 days on {birthday.date()}')
+
+    return recent_births
+
+
 all_validators = [
     validate_dates_before_current, #US01
     birth_before_marriage, #US02
@@ -794,7 +808,8 @@ all_validators = [
     validate_list_living_married, #US30
     list_recent_deaths,  # US36
     list_upcoming_birthdays,  # US38
-    list_large_age_diff #US34
+    list_large_age_diff, #US34
+    list_recent_births #US35
 ]
 
 
