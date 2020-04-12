@@ -660,7 +660,6 @@
 1 WIFE I51-34
 1 MARR
 2 DATE 01 JAN 2000
-<<<<<<< HEAD
 0 NOTE ** US35 List All People in a GEDCOM file who were born in the last 30 days
 0 I50-35 INDI
 1 NAME John /Smith/
@@ -672,7 +671,6 @@
 1 SEX F
 1 BIRT
 2 DATE 05 APR 2020
-=======
 0 NOTE *** US09 ***
 0 I09-1 INDI
 1 BIRT
@@ -688,5 +686,4 @@
 1 HUSB I09-2
 1 WIFE I09-3
 1 CHIL I09-1
->>>>>>> aac14e3a9c5a571662de355e38a338f94047a857
 0 TRLR
